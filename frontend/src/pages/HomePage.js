@@ -348,17 +348,17 @@ const HomePage = () => {
           <div className="row justify-content-center mb-5">
             <div className="col-lg-10">
               <div style={{
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(10px)',
+                background: colorPalette.glass.white,
+                backdropFilter: 'blur(15px)',
                 borderRadius: '20px',
                 padding: '40px',
-                boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
+                boxShadow: shadows.xl
               }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '30px' }}>
                   <div style={{ display: 'flex', alignItems: 'center' }}>
                     <h3 style={{ margin: 0, marginRight: '15px' }}>📊 Live Platform Statistics</h3>
                     {isStatsLoading && (
-                      <LoadingAnimation type="dots" size={24} color="#4CAF50" />
+                    <LoadingAnimation type="dots" size={24} color={colorPalette.primary[500]} />
                     )}
                   </div>
                   
@@ -366,7 +366,7 @@ const HomePage = () => {
                   <button
                     onClick={() => setShowExportManager(true)}
                     style={{
-                      background: 'linear-gradient(45deg, #17a2b8, #20c997)',
+                      background: getGradient('accent'),
                       color: 'white',
                       border: 'none',
                       borderRadius: '12px',
@@ -375,18 +375,18 @@ const HomePage = () => {
                       fontWeight: '600',
                       cursor: 'pointer',
                       transition: 'all 0.3s ease',
-                      boxShadow: '0 5px 15px rgba(23, 162, 184, 0.3)',
+                      boxShadow: `0 5px 15px ${colorPalette.info.main}30`,
                       display: 'flex',
                       alignItems: 'center',
                       gap: '8px'
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 8px 25px rgba(23, 162, 184, 0.4)';
+                      e.currentTarget.style.boxShadow = `0 8px 25px ${colorPalette.info.main}40`;
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 5px 15px rgba(23, 162, 184, 0.3)';
+                      e.currentTarget.style.boxShadow = `0 5px 15px ${colorPalette.info.main}30`;
                     }}
                   >
                     📄 Export Data
@@ -397,12 +397,12 @@ const HomePage = () => {
                 <div className="row text-center g-4 mb-4">
                   <div className="col-md-3">
                     <div style={{
-                      background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                      background: getGradient('card'),
                       borderRadius: '20px',
                       padding: '30px 20px',
                       textAlign: 'center',
-                      boxShadow: '0 15px 35px rgba(76, 175, 80, 0.1)',
-                      border: '1px solid rgba(76, 175, 80, 0.1)',
+                      boxShadow: `${shadows.lg}, 0 0 0 1px ${colorPalette.primary[100]}`,
+                      border: `1px solid ${colorPalette.primary[100]}`,
                       transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                       cursor: 'pointer',
                       position: 'relative',
@@ -411,11 +411,11 @@ const HomePage = () => {
                     className="dashboard-card enhanced-card"
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
-                      e.currentTarget.style.boxShadow = '0 25px 50px rgba(76, 175, 80, 0.2)';
+                      e.currentTarget.style.boxShadow = `${shadows.xl}, ${shadows.glow}`;
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                      e.currentTarget.style.boxShadow = '0 15px 35px rgba(76, 175, 80, 0.1)';
+                      e.currentTarget.style.boxShadow = `${shadows.lg}, 0 0 0 1px ${colorPalette.primary[100]}`;
                     }}>
                       {/* Animated background effect */}
                       <div style={{
@@ -424,7 +424,7 @@ const HomePage = () => {
                         left: '-50%',
                         width: '200%',
                         height: '200%',
-                        background: 'linear-gradient(45deg, transparent, rgba(76, 175, 80, 0.05), transparent)',
+                        background: `linear-gradient(45deg, transparent, ${colorPalette.primary[50]}, transparent)`,
                         animation: 'shimmer 3s ease-in-out infinite',
                         pointerEvents: 'none'
                       }}></div>
@@ -435,7 +435,7 @@ const HomePage = () => {
                       <div style={{
                         fontSize: '2.8em',
                         fontWeight: '800',
-                        background: 'linear-gradient(45deg, #4CAF50, #8BC34A)',
+                        background: getGradient('primary'),
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                         marginBottom: '8px',
@@ -443,11 +443,11 @@ const HomePage = () => {
                       }}>
                         {animatedStats.totalBatches}
                       </div>
-                      <div style={{ color: '#666', fontWeight: '600', fontSize: '14px' }}>Total Herb Batches</div>
+                      <div style={{ color: colorPalette.neutral[600], fontWeight: '600', fontSize: '14px' }}>Total Herb Batches</div>
                       <div style={{
                         marginTop: '10px',
                         fontSize: '12px',
-                        color: '#4CAF50',
+                        color: colorPalette.primary[600],
                         fontWeight: '500'
                       }}>
                         +{stats.weeklyBatches || 0} this week
@@ -457,12 +457,12 @@ const HomePage = () => {
                   
                   <div className="col-md-3">
                     <div style={{
-                      background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                      background: getGradient('card'),
                       borderRadius: '20px',
                       padding: '30px 20px',
                       textAlign: 'center',
-                      boxShadow: '0 15px 35px rgba(255, 193, 7, 0.1)',
-                      border: '1px solid rgba(255, 193, 7, 0.1)',
+                      boxShadow: `${shadows.lg}, 0 0 0 1px ${colorPalette.secondary[100]}`,
+                      border: `1px solid ${colorPalette.secondary[100]}`,
                       transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                       cursor: 'pointer',
                       position: 'relative',
@@ -471,11 +471,11 @@ const HomePage = () => {
                     className="dashboard-card enhanced-card"
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'translateY(-8px) scale(1.02)';
-                      e.currentTarget.style.boxShadow = '0 25px 50px rgba(255, 193, 7, 0.2)';
+                      e.currentTarget.style.boxShadow = `${shadows.xl}, 0 0 20px ${colorPalette.secondary[300]}60`;
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'translateY(0) scale(1)';
-                      e.currentTarget.style.boxShadow = '0 15px 35px rgba(255, 193, 7, 0.1)';
+                      e.currentTarget.style.boxShadow = `${shadows.lg}, 0 0 0 1px ${colorPalette.secondary[100]}`;
                     }}>
                       <div style={{
                         position: 'absolute',
@@ -483,7 +483,7 @@ const HomePage = () => {
                         left: '-50%',
                         width: '200%',
                         height: '200%',
-                        background: 'linear-gradient(45deg, transparent, rgba(255, 193, 7, 0.05), transparent)',
+                        background: `linear-gradient(45deg, transparent, ${colorPalette.secondary[50]}, transparent)`,
                         animation: 'shimmer 3s ease-in-out infinite 0.5s',
                         pointerEvents: 'none'
                       }}></div>
@@ -494,7 +494,7 @@ const HomePage = () => {
                       <div style={{
                         fontSize: '2.8em',
                         fontWeight: '800',
-                        background: 'linear-gradient(45deg, #ffc107, #fd7e14)',
+                        background: getGradient('secondary'),
                         WebkitBackgroundClip: 'text',
                         WebkitTextFillColor: 'transparent',
                         marginBottom: '8px',
@@ -502,11 +502,11 @@ const HomePage = () => {
                       }}>
                         {animatedStats.totalFarmers}
                       </div>
-                      <div style={{ color: '#666', fontWeight: '600', fontSize: '14px' }}>Registered Farmers</div>
+                      <div style={{ color: colorPalette.neutral[600], fontWeight: '600', fontSize: '14px' }}>Registered Farmers</div>
                       <div style={{
                         marginTop: '10px',
                         fontSize: '12px',
-                        color: '#ffc107',
+                        color: colorPalette.secondary[600],
                         fontWeight: '500'
                       }}>
                         Quality Score: {stats.averageQuality || 0}%
@@ -516,12 +516,12 @@ const HomePage = () => {
                   
                   <div className="col-md-3">
                     <div style={{
-                      background: 'linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%)',
+                      background: getGradient('card'),
                       borderRadius: '20px',
                       padding: '30px 20px',
                       textAlign: 'center',
-                      boxShadow: '0 15px 35px rgba(0, 123, 255, 0.1)',
-                      border: '1px solid rgba(0, 123, 255, 0.1)',
+                      boxShadow: `${shadows.lg}, 0 0 0 1px ${colorPalette.info.light}`,
+                      border: `1px solid ${colorPalette.info.light}`,
                       transition: 'all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275)',
                       cursor: 'pointer',
                       position: 'relative',
