@@ -3,13 +3,16 @@ import { useAuth } from '../../contexts/AuthContext';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import AnalyticsDashboard from '../../components/analytics/AnalyticsDashboard';
 import SupplyChainMap from '../../components/mapping/SupplyChainMap';
+import HerbRegistrationForm from '../../components/farmer/HerbRegistrationForm';
 import localStorageManager from '../../utils/localStorage';
+import { colorPalette, getGradient, shadows } from '../../styles/colorPalette';
 
 const FarmerDashboard = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState(null);
   const [activeView, setActiveView] = useState('dashboard');
+  const [showHerbForm, setShowHerbForm] = useState(false);
 
   // Fetch farmer dashboard data from local storage
   useEffect(() => {
@@ -60,7 +63,7 @@ const FarmerDashboard = () => {
           ]
         };
         
-        setDashboardData(mockData);
+        setDashboardData(dashboardData);
       } catch (error) {
         console.error('Error fetching farmer dashboard data:', error);
       } finally {
@@ -70,6 +73,25 @@ const FarmerDashboard = () => {
 
     fetchDashboardData();
   }, []);
+
+  // Handle herb batch submission
+  const handleHerbSubmit = (herbData) => {
+    // Save to localStorage
+    localStorageManager.addBatch({
+      ...herbData,
+      farmerId: user?.id,
+      crop: herbData.herbType,
+      quality: `Grade ${herbData.qualityGrade}`,
+      quantity: `${herbData.quantity} kg`,
+      status: 'Growing'
+    });
+    
+    // Close form and refresh data
+    setShowHerbForm(false);
+    
+    // Refresh dashboard data
+    window.location.reload(); // Simple refresh for demo
+  };
 
   if (loading) {
     return <LoadingSpinner fullScreen={true} text="Loading farmer dashboard..." />;
@@ -109,9 +131,31 @@ const FarmerDashboard = () => {
                   Location View
                 </button>
               </div>
-              <button className="btn btn-success">
+              <button 
+                onClick={() => setShowHerbForm(true)}
+                style={{
+                  background: getGradient('primary'),
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '12px',
+                  padding: '10px 20px',
+                  fontSize: '14px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  transition: 'all 0.3s ease',
+                  boxShadow: shadows.md
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = shadows.lg;
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = shadows.md;
+                }}
+              >
                 <i className="fas fa-plus me-2"></i>
-                Add New Batch
+                🌿 Add New Herb Batch
               </button>
             </div>
           </div>
@@ -393,7 +437,10 @@ const FarmerDashboard = () => {
             <div className="card-body">
               <div className="row">
                 <div className="col-md-3 mb-3">
-                  <button className="btn btn-outline-success w-100 py-3">
+                  <button 
+                    className="btn btn-outline-success w-100 py-3"
+                    onClick={() => setShowHerbForm(true)}
+                  >
                     <i className="fas fa-plus-circle fa-2x mb-2"></i><br />
                     Create New Batch
                   </button>
@@ -422,6 +469,14 @@ const FarmerDashboard = () => {
         </div>
       </div>
         </>
+      )}
+      
+      {/* Herb Registration Form Modal */}
+      {showHerbForm && (
+        <HerbRegistrationForm 
+          onClose={() => setShowHerbForm(false)}
+          onSubmit={handleHerbSubmit}
+        />
       )}
     </div>
   );

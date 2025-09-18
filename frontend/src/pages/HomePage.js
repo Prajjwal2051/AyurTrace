@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import localStorageManager from '../utils/localStorage';
-import AnimationEffects, { SparkleButton, LoadingAnimation } from '../components/common/AnimationEffects';
+import AnimationEffects, { LoadingAnimation } from '../components/common/AnimationEffects';
 import DataExportManager from '../components/common/DataExportManager';
 import { colorPalette, getGradient, shadows } from '../styles/colorPalette';
 
@@ -703,62 +703,88 @@ const HomePage = () => {
                 <h4 className="mb-4">🚀 Ready to Get Started?</h4>
                 <div className="d-flex justify-content-center gap-3 flex-wrap">
                   {isAuthenticated ? (
-                    <SparkleButton 
+                    <button
                       onClick={handleGetStarted}
-                      sparkleColor="#FFD700"
                       style={{
-                        background: 'linear-gradient(45deg, #4CAF50, #8BC34A)',
+                        background: getGradient('primary'),
                         color: 'white',
-                        padding: '15px 30px',
                         border: 'none',
                         borderRadius: '15px',
                         cursor: 'pointer',
                         fontSize: '16px',
                         fontWeight: '600',
-                        boxShadow: '0 8px 25px rgba(76, 175, 80, 0.3)',
-                        position: 'relative'
+                        padding: '15px 30px',
+                        boxShadow: shadows.glow,
+                        transition: 'all 0.3s ease'
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = shadows.xl;
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = shadows.glow;
                       }}
                     >
                       <i className="fas fa-tachometer-alt me-2"></i>
-                      🎆 Go to Dashboard
+                      Go to Dashboard
+                    </button>
                     </SparkleButton>
                   ) : (
                     <>
-                      <SparkleButton
+                      <button
                         onClick={() => navigate('/register')}
-                        sparkleColor="#4ECDC4"
                         style={{
-                          background: 'linear-gradient(45deg, #4CAF50, #8BC34A)',
+                          background: getGradient('primary'),
                           color: 'white',
                           padding: '15px 30px',
                           border: 'none',
                           borderRadius: '15px',
                           fontSize: '16px',
                           fontWeight: '600',
-                          boxShadow: '0 8px 25px rgba(76, 175, 80, 0.3)',
-                          marginRight: '10px'
+                          boxShadow: shadows.glow,
+                          marginRight: '15px',
+                          cursor: 'pointer',
+                          transition: 'all 0.3s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = shadows.xl;
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = shadows.glow;
                         }}
                       >
                         <i className="fas fa-user-plus me-2"></i>
-                        🌟 Get Started
-                      </SparkleButton>
-                      <SparkleButton
+                        Get Started
+                      </button>
+                      <button
                         onClick={() => navigate('/login')}
-                        sparkleColor="#45B7D1"
                         style={{
-                          background: 'linear-gradient(45deg, #6c757d, #495057)',
+                          background: getGradient('accent'),
                           color: 'white',
                           padding: '15px 30px',
                           border: 'none',
                           borderRadius: '15px',
                           fontSize: '16px',
                           fontWeight: '600',
-                          boxShadow: '0 8px 25px rgba(108, 117, 125, 0.3)'
+                          boxShadow: `0 8px 25px ${colorPalette.info.main}30`,
+                          cursor: 'pointer',
+                          transition: 'all 0.3s ease'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.transform = 'translateY(-2px)';
+                          e.currentTarget.style.boxShadow = `0 12px 30px ${colorPalette.info.main}40`;
+                        }}
+                        onMouseLeave={(e) => {
+                          e.currentTarget.style.transform = 'translateY(0)';
+                          e.currentTarget.style.boxShadow = `0 8px 25px ${colorPalette.info.main}30`;
                         }}
                       >
                         <i className="fas fa-sign-in-alt me-2"></i>
-                        🗺️ Portal Login
-                      </SparkleButton>
+                        Portal Login
+                      </button>
                     </>
                   )}
                 </div>
