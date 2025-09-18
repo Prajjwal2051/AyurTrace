@@ -4,7 +4,6 @@ import { useAuth } from '../contexts/AuthContext';
 import localStorageManager from '../utils/localStorage';
 import AnimationEffects, { LoadingAnimation } from '../components/common/AnimationEffects';
 import DataExportManager from '../components/common/DataExportManager';
-import ConsumerPortal from '../components/consumer/ConsumerPortal';
 import { colorPalette, getGradient, shadows } from '../styles/colorPalette';
 
 const HomePage = () => {
@@ -27,7 +26,6 @@ const HomePage = () => {
   });
   const [isStatsLoading, setIsStatsLoading] = useState(false);
   const [showExportManager, setShowExportManager] = useState(false);
-  const [showConsumerPortal, setShowConsumerPortal] = useState(false);
 
   const supplyChainSteps = [
     { name: '🌱 Collection', color: 'success', description: 'Herb harvesting from certified farms' },
@@ -343,99 +341,6 @@ const HomePage = () => {
                   <p className="card-text text-muted">
                     Instant product verification with dynamic QR codes and GPS tracking.
                   </p>
-                </div>
-              </div>
-            </div>
-          </div>
-          
-          {/* Consumer Verification Section */}
-          <div className="row justify-content-center mb-5">
-            <div className="col-lg-8">
-              <div style={{
-                background: getGradient('accent'),
-                borderRadius: '25px',
-                padding: '40px',
-                textAlign: 'center',
-                color: 'white',
-                boxShadow: shadows.xl
-              }}>
-                <div style={{ fontSize: '3rem', marginBottom: '20px' }}>🛒</div>
-                <h3 style={{ margin: '0 0 15px 0', fontSize: '28px', fontWeight: '700' }}>
-                  Consumer Verification Portal
-                </h3>
-                <p style={{ margin: '0 0 25px 0', fontSize: '16px', opacity: 0.9 }}>
-                  Verify product authenticity instantly with QR code scanning
-                </p>
-                <div style={{ display: 'flex', gap: '15px', justifyContent: 'center', flexWrap: 'wrap' }}>
-                  <button
-                    onClick={() => setShowConsumerPortal(true)}
-                    style={{
-                      background: 'rgba(255, 255, 255, 0.2)',
-                      backdropFilter: 'blur(10px)',
-                      color: 'white',
-                      border: '2px solid rgba(255, 255, 255, 0.3)',
-                      borderRadius: '15px',
-                      padding: '15px 30px',
-                      fontSize: '16px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s ease',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '10px'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.3)';
-                      e.currentTarget.style.transform = 'translateY(-3px)';
-                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.5)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'rgba(255, 255, 255, 0.2)';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.3)';
-                    }}
-                  >
-                    📱 Scan QR Code
-                  </button>
-                  <button
-                    onClick={() => setShowConsumerPortal(true)}
-                    style={{
-                      background: 'white',
-                      color: colorPalette.primary[600],
-                      border: '2px solid white',
-                      borderRadius: '15px',
-                      padding: '15px 30px',
-                      fontSize: '16px',
-                      fontWeight: '600',
-                      cursor: 'pointer',
-                      transition: 'all 0.3s ease',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '10px'
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.background = colorPalette.neutral[100];
-                      e.currentTarget.style.transform = 'translateY(-3px)';
-                      e.currentTarget.style.boxShadow = shadows.lg;
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.background = 'white';
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
-                  >
-                    🔍 Verify Product
-                  </button>
-                </div>
-                <div style={{
-                  marginTop: '25px',
-                  padding: '15px',
-                  background: 'rgba(255, 255, 255, 0.1)',
-                  borderRadius: '12px',
-                  fontSize: '13px',
-                  opacity: 0.9
-                }}>
-                  <strong>✨ No registration required!</strong> Simply scan any AyurTrace QR code to instantly verify product authenticity and view complete supply chain journey.
                 </div>
               </div>
             </div>
@@ -1005,11 +910,6 @@ const HomePage = () => {
       {/* Data Export Manager Modal */}
       {showExportManager && (
         <DataExportManager onClose={() => setShowExportManager(false)} />
-      )}
-      
-      {/* Consumer Portal Modal */}
-      {showConsumerPortal && (
-        <ConsumerPortal onClose={() => setShowConsumerPortal(false)} />
       )}
     </AnimationEffects>
   );
