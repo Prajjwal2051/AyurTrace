@@ -4,6 +4,7 @@ import { useAuth } from '../contexts/AuthContext';
 import localStorageManager from '../utils/localStorage';
 import AnimationEffects, { SparkleButton, LoadingAnimation } from '../components/common/AnimationEffects';
 import DataExportManager from '../components/common/DataExportManager';
+import { colorPalette, getGradient, shadows } from '../styles/colorPalette';
 
 const HomePage = () => {
   const { isAuthenticated, user } = useAuth();
@@ -205,7 +206,7 @@ const HomePage = () => {
   return (
     <AnimationEffects enableSparkles={true} enableParticles={false} enableHoverGlow={true}>
       <div className="homepage" style={{
-        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        background: getGradient('hero'),
         minHeight: '100vh',
         position: 'relative'
       }}>
@@ -215,17 +216,17 @@ const HomePage = () => {
           {/* Header Card */}
           <div className="text-center mb-5">
             <div style={{
-              background: 'rgba(255, 255, 255, 0.95)',
-              backdropFilter: 'blur(10px)',
+              background: colorPalette.glass.white,
+              backdropFilter: 'blur(15px)',
               borderRadius: '20px',
               padding: '30px',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.1)',
-              border: '1px solid rgba(255, 255, 255, 0.2)'
+              boxShadow: shadows.xl,
+              border: `1px solid ${colorPalette.glass.border}`
             }}>
               <div style={{
                 fontSize: '2.5em',
                 fontWeight: 'bold',
-                background: 'linear-gradient(45deg, #4CAF50, #8BC34A)',
+                background: getGradient('primary'),
                 WebkitBackgroundClip: 'text',
                 WebkitTextFillColor: 'transparent',
                 marginBottom: '10px'
@@ -242,11 +243,11 @@ const HomePage = () => {
           <div className="row justify-content-center mb-5">
             <div className="col-lg-10">
               <div style={{
-                background: 'rgba(255, 255, 255, 0.95)',
-                backdropFilter: 'blur(10px)',
+                background: colorPalette.glass.white,
+                backdropFilter: 'blur(15px)',
                 borderRadius: '20px',
                 padding: '40px',
-                boxShadow: '0 20px 40px rgba(0,0,0,0.1)'
+                boxShadow: shadows.xl
               }}>
                 <h3 className="text-center mb-4">Supply Chain Journey</h3>
                 <div className="d-flex justify-content-between align-items-center flex-wrap">
@@ -258,17 +259,17 @@ const HomePage = () => {
                     }}>
                       <div style={{
                         background: currentStep === index 
-                          ? 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
-                          : 'linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%)',
-                        color: currentStep === index ? 'white' : '#666',
+                          ? getGradient('primary')
+                          : getGradient('card'),
+                        color: currentStep === index ? 'white' : colorPalette.neutral[600],
                         padding: '20px',
                         borderRadius: '15px',
                         textAlign: 'center',
                         minWidth: '150px',
                         transition: 'all 0.3s ease',
                         boxShadow: currentStep === index 
-                          ? '0 10px 30px rgba(102, 126, 234, 0.3)'
-                          : '0 5px 15px rgba(0,0,0,0.1)',
+                          ? shadows.glow
+                          : shadows.md,
                         cursor: 'pointer'
                       }}
                       onMouseEnter={addSparkleEffect}>
@@ -284,7 +285,7 @@ const HomePage = () => {
                           top: '50%',
                           transform: 'translateY(-50%)',
                           fontSize: '20px',
-                          color: '#667eea',
+                          color: colorPalette.primary[500],
                           zIndex: 1
                         }}>→</div>
                       )}
