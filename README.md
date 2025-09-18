@@ -1,4 +1,3 @@
-
 # AyurTrace - Blockchain-Based Ayurvedic Herb Supply Chain Traceability
 
 ## 🌿 Overview
@@ -98,7 +97,7 @@ AyurTrace/
 
 ### 1. Clone Repository
 ```bash
-git clone <repository-url>
+git clone https://github.com/Prajjwal2051/AyurTrace.git
 cd AyurTrace
 ```
 
