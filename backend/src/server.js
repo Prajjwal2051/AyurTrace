@@ -259,6 +259,11 @@ const server = app.listen(PORT, () => {
   console.log('='.repeat(50));
 });
 
+// Initialize WebSocket server
+const socketServer = require('./websocket/socketServer');
+socketServer.initialize(server);
+console.log('📡 WebSocket server initialized for real-time features');
+
 // Handle server errors
 server.on('error', (error) => {
   if (error.syscall !== 'listen') {
