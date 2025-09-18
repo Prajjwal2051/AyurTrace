@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AyurTrace - Blockchain Herb Traceability</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2.5em;
+            font-weight: bold;
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            color: #666;
+            font-size: 1.1em;
+        }
+
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 15px;
+            padding: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 15px 25px;
+            margin: 0 5px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            color: #666;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            min-height: 500px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #4CAF50, #8BC34A);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin: 10px 5px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(76, 175, 80, 0.3);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(45deg, #6c757d, #495057);
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-info {
+            background: #cce7ff;
+            color: #0c5460;
+            border: 1px solid #b8daff;
+        }
+
+        .supply-chain {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 30px 0;
+            flex-wrap: wrap;
+        }
+
+        .chain-step {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            min-width: 150px;
+            margin: 10px;
+            position: relative;
+            transition: transform 0.3s ease;
+        }
+
+        .chain-step:hover {
+            transform: scale(1.05);
+        }
+
+        .chain-step::after {
+            content: '→';
+            position: absolute;
+            right: -25px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            color: #667eea;
+        }
+
+        .chain-step:last-child::after {
+            display: none;
+        }
+
+        .blockchain-viz {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .block {
+            background: linear-gradient(45deg, #17a2b8, #138496);
+            color: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 10px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .block:hover {
+            transform: translateX(10px);
+            box-shadow: 0 10px 20px rgba(23, 162, 184, 0.3);
+        }
+
+        .qr-placeholder {
+            width: 150px;
+            height: 150px;
+            background: #f8f9fa;
+            border: 2px dashed #ccc;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 20px auto;
+            font-size: 14px;
+            color: #666;
+            text-align: center;
+        }
+
+        .herb-card {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 15px 0;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .herb-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .status-verified {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status-processing {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .dashboard-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .dashboard-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .scanner-area {
+            background: #f8f9fa;
+            border: 2px dashed #ccc;
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        .geo-info {
+            background: #e8f5e8;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+
+        .timeline {
+            position: relative;
+            margin: 20px 0;
+        }
+
+        .timeline-item {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            position: relative;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .timeline-time {
+            color: #666;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid #4CAF50;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .supply-chain {
+                flex-direction: column;
+            }
+            
+            .chain-step::after {
+                content: '↓';
+                right: 50%;
+                top: -15px;
+                transform: translateX(50%);
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .tab-btn {
+                margin: 5px 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">🌿 AyurTrace</div>
+            <div class="tagline">Blockchain-Powered Ayurvedic Herb Traceability Platform</div>
+        </div>
+
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="showSection('farmer')">👨‍🌾 Farmer Portal</button>
+            <button class="tab-btn" onclick="showSection('manufacturer')">🏭 Manufacturer</button>
+            <button class="tab-btn" onclick="showSection('consumer')">🛒 Consumer</button>
+            <button class="tab-btn" onclick="showSection('blockchain')">⛓️ Blockchain</button>
+            <button class="tab-btn" onclick="showSection('dashboard')">📊 Dashboard</button>
+        </div>
+
+        <div class="tab-content">
+            <!-- Farmer Portal Section -->
+            <div id="farmer" class="section active">
+                <h2>🌱 Farmer Registration & Herb Logging</h2>
+                
+                <div class="supply-chain">
+                    <div class="chain-step">🌱 Collection</div>
+                    <div class="chain-step">📦 Processing</div>
+                    <div class="chain-step">🏭 Manufacturing</div>
+                    <div class="chain-step">🏪 Retail</div>
+                    <div class="chain-step">👤 Consumer</div>
+                </div>
+
+                <form id="herbForm">
+                    <div class="form-group">
+                        <label>Herb Type</label>
+                        <select id="herbType" required>
+                            <option value="">Select Herb</option>
+                            <option value="ashwagandha">Ashwagandha</option>
+                            <option value="brahmi">Brahmi</option>
+                            <option value="tulsi">Tulsi</option>
+                            <option value="neem">Neem</option>
+                            <option value="turmeric">Turmeric</option>
+                            <option value="amla">Amla</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Farmer Name</label>
+                        <input type="text" id="farmerName" placeholder="Enter farmer name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Collection Location</label>
+                        <input type="text" id="location" placeholder="Village, District, State" required>
+                    </div>
+
+                    <div class="geo-info">
+                        <strong>📍 Geo-coordinates:</strong>
+                        <span id="coordinates">Click 'Get Location' to fetch GPS coordinates</span>
+                        <button type="button" class="btn btn-secondary" onclick="getLocation()">Get Location</button>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quantity (kg)</label>
+                        <input type="number" id="quantity" placeholder="Enter quantity in kg" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Harvest Date</label>
+                        <input type="date" id="harvestDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quality Grade</label>
+                        <select id="qualityGrade" required>
+                            <option value="">Select Grade</option>
+                            <option value="A">Grade A (Premium)</option>
+                            <option value="B">Grade B (Standard)</option>
+                            <option value="C">Grade C (Commercial)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Additional Notes</label>
+                        <textarea id="notes" placeholder="Any additional information about the herbs..."></textarea>
+                    </div>
+
+                    <button type="button" class="btn" onclick="submitHerbForm()">🔗 Add to Blockchain</button>
+                </form>
+
+                <div id="farmAlert"></div>
+            </div>
+
+            <!-- Manufacturer Section -->
+            <div id="manufacturer" class="section">
+                <h2>🏭 Manufacturer Portal</h2>
+                
+                <h3>📋 Available Herb Batches</h3>
+                <div id="herbBatches">
+                    <!-- Dynamic content will be loaded here -->
+                </div>
+
+                <h3>🔄 Process Herbs</h3>
+                <form id="processForm">
+                    <div class="form-group">
+                        <label>Select Batch ID</label>
+                        <select id="batchSelect" required>
+                            <option value="">Select a batch to process</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Manufacturing Process</label>
+                        <select id="processType" required>
+                            <option value="">Select Process</option>
+                            <option value="drying">Drying & Cleaning</option>
+                            <option value="grinding">Grinding & Powder</option>
+                            <option value="extraction">Oil Extraction</option>
+                            <option value="tablet">Tablet Formation</option>
+                            <option value="capsule">Capsule Filling</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Manufacturing Facility</label>
+                        <input type="text" id="facility" placeholder="Enter facility name/location" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Quality Test Results</label>
+                        <textarea id="testResults" placeholder="Enter quality test results..."></textarea>
+                    </div>
+
+                    <button type="button" class="btn" onclick="submitProcessForm()">🏭 Process & Update Chain</button>
+                </form>
+
+                <div id="manufAlert"></div>
+            </div>
+
+            <!-- Consumer Section -->
+            <div id="consumer" class="section">
+                <h2>🛒 Consumer Verification Portal</h2>
+                
+                <div class="scanner-area">
+                    <h3>📱 QR Code Scanner</h3>
+                    <div class="qr-placeholder">
+                        QR Code Scanner
+                        <br>
+                        (Camera Integration)
+                    </div>
+                    <button type="button" class="btn" onclick="simulateQRScan()">🔍 Simulate QR Scan</button>
+                </div>
+
+                <div class="form-group">
+                    <label>Or Enter Product ID Manually</label>
+                    <input type="text" id="productId" placeholder="Enter product ID or batch number">
+                    <button type="button" class="btn" onclick="verifyProduct()">✅ Verify Product</button>
+                </div>
+
+                <div id="productInfo" style="display: none;">
+                    <h3>📜 Product Traceability Report</h3>
+                    <div id="traceabilityData"></div>
+                </div>
+
+                <div id="consumerAlert"></div>
+            </div>
+
+            <!-- Blockchain Section -->
+            <div id="blockchain" class="section">
+                <h2>⛓️ Blockchain Ledger</h2>
+                <p>Real-time view of all transactions on the AyurTrace blockchain network</p>
+                
+                <div class="blockchain-viz">
+                    <h3>📊 Recent Blockchain Blocks</h3>
+                    <div id="blockchainBlocks">
+                        <!-- Dynamic blockchain blocks will be shown here -->
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Search Transaction</label>
+                    <input type="text" id="searchHash" placeholder="Enter transaction hash or batch ID">
+                    <button type="button" class="btn" onclick="searchTransaction()">🔍 Search</button>
+                </div>
+
+                <div id="blockchainAlert"></div>
+            </div>
+
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section">
+                <h2>📊 Analytics Dashboard</h2>
+                
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="dashboard-number" id="totalBatches">0</div>
+                        <div>Total Herb Batches</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-number" id="totalFarmers">0</div>
+                        <div>Registered Farmers</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-number" id="totalProducts">0</div>
+                        <div>Products in Market</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="dashboard-number" id="verificationCount">0</div>
+                        <div>Consumer Verifications</div>
+                    </div>
+                </div>
+
+                <h3>📈 Recent Activity</h3>
+                <div class="timeline" id="activityTimeline">
+                    <!-- Recent activity will be shown here -->
+                </div>
+
+                <h3>🌍 Geographic Distribution</h3>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 15px; text-align: center;">
+                    <p>📍 Interactive map showing herb collection locations</p>
+                    <p><em>(Map integration would be implemented using Google Maps/Leaflet API)</em></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Global variables for demo data
+        let herbBatches = [];
+        let blockchainData = [];
+        let farmersCount = 0;
+        let productsCount = 0;
+        let verificationCount = 0;
+
+        // Tab switching functionality
+        function showSection(sectionId) {
+            // Hide all sections
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => section.classList.remove('active'));
+            
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab-btn');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            
+            // Show selected section and activate tab
+            document.getElementById(sectionId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Get GPS location
+        function getLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(function(position) {
+                    const lat = position.coords.latitude.toFixed(6);
+                    const lng = position.coords.longitude.toFixed(6);
+                    document.getElementById('coordinates').textContent = `${lat}, ${lng}`;
+                }, function() {
+                    // Fallback for demo
+                    document.getElementById('coordinates').textContent = `28.6139, 77.2090 (Demo Location)`;
+                });
+            } else {
+                document.getElementById('coordinates').textContent = `28.6139, 77.2090 (Demo Location)`;
+            }
+        }
+
+        // Generate unique batch ID
+        function generateBatchId() {
+            return 'AYUR-' + Date.now().toString(36).toUpperCase() + Math.random().toString(36).substring(2, 5).toUpperCase();
+        }
+
+        // Generate blockchain hash
+        function generateHash() {
+            return '0x' + Math.random().toString(16).substring(2, 10) + Math.random().toString(16).substring(2, 10);
+        }
+
+        // Direct function for herb form submission (called by onclick)
+        function submitHerbForm() {
+            console.log('Submit herb form called'); // Debug log
+            
+            // Validate required fields
+            const herbType = document.getElementById('herbType').value;
+            const farmerName = document.getElementById('farmerName').value;
+            const location = document.getElementById('location').value;
+            const quantity = document.getElementById('quantity').value;
+            const harvestDate = document.getElementById('harvestDate').value;
+            const qualityGrade = document.getElementById('qualityGrade').value;
+
+            if (!herbType || !farmerName || !location || !quantity || !harvestDate || !qualityGrade) {
+                document.getElementById('farmAlert').innerHTML = `
+                    <div class="alert alert-info">
+                        ⚠️ Please fill in all required fields before submitting.
+                    </div>
+                `;
+                return;
+            }
+
+            // Show processing message
+            document.getElementById('farmAlert').innerHTML = `
+                <div class="alert alert-info">
+                    <div class="loading"></div> Processing transaction on blockchain...
+                </div>
+            `;
+
+            // Simulate network delay for realistic blockchain feel
+            setTimeout(() => {
+                const formData = {
+                    batchId: generateBatchId(),
+                    herbType: herbType,
+                    farmerName: farmerName,
+                    location: location,
+                    coordinates: document.getElementById('coordinates').textContent || 'Location not set',
+                    quantity: quantity,
+                    harvestDate: harvestDate,
+                    qualityGrade: qualityGrade,
+                    notes: document.getElementById('notes').value || '',
+                    timestamp: new Date().toISOString(),
+                    status: 'Harvested',
+                    transactionHash: generateHash()
+                };
+
+                console.log('Adding herb batch:', formData); // Debug log
+
+                // Add to herb batches
+                herbBatches.push(formData);
+                farmersCount++;
+
+                // Add to blockchain
+                addToBlockchain('HARVEST', formData);
+
+                // Show success message
+                document.getElementById('farmAlert').innerHTML = `
+                    <div class="alert alert-success">
+                        ✅ Herb batch successfully added to blockchain!<br>
+                        <strong>Batch ID:</strong> ${formData.batchId}<br>
+                        <strong>Transaction Hash:</strong> ${formData.transactionHash}<br>
+                        <strong>Block Number:</strong> #${blockchainData.length}
+                    </div>
+                `;
+
+                // Update manufacturer dropdown
+                updateManufacturerBatches();
+                updateDashboard();
+
+                // Reset form
+                document.getElementById('herbForm').reset();
+                document.getElementById('coordinates').textContent = 'Click \'Get Location\' to fetch GPS coordinates';
+
+                console.log('Form submitted successfully'); // Debug log
+            }, 1500);
+        }
+
+        // Farmer form submission
+        function initializeFarmerForm() {
+            const herbForm = document.getElementById('herbForm');
+            if (herbForm) {
+                herbForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    submitHerbForm();
+                });
+            }
+        }
+
+        // Add transaction to blockchain
+        function addToBlockchain(type, data) {
+            const block = {
+                blockNumber: blockchainData.length + 1,
+                timestamp: new Date().toISOString(),
+                transactionType: type,
+                transactionHash: data.transactionHash,
+                data: data,
+                previousHash: blockchainData.length > 0 ? blockchainData[blockchainData.length - 1].transactionHash : '0x000000'
+            };
+
+            blockchainData.push(block);
+            updateBlockchainViz();
+        }
+
+        // Update blockchain visualization
+        function updateBlockchainViz() {
+            const container = document.getElementById('blockchainBlocks');
+            container.innerHTML = '';
+
+            blockchainData.slice(-5).reverse().forEach(block => {
+                container.innerHTML += `
+                    <div class="block">
+                        <strong>Block #${block.blockNumber}</strong> - ${block.transactionType}
+                        <br><small>Hash: ${block.transactionHash}</small>
+                        <br><small>Time: ${new Date(block.timestamp).toLocaleString()}</small>
+                    </div>
+                `;
+            });
+        }
+
+        // Update manufacturer batches
+        function updateManufacturerBatches() {
+            const batchContainer = document.getElementById('herbBatches');
+            const batchSelect = document.getElementById('batchSelect');
+            
+            batchContainer.innerHTML = '';
+            batchSelect.innerHTML = '<option value="">Select a batch to process</option>';
+
+            herbBatches.forEach(batch => {
+                if (batch.status === 'Harvested') {
+                    batchContainer.innerHTML += `
+                        <div class="herb-card">
+                            <h4>${batch.herbType.charAt(0).toUpperCase() + batch.herbType.slice(1)}</h4>
+                            <p><strong>Batch ID:</strong> ${batch.batchId}</p>
+                            <p><strong>Farmer:</strong> ${batch.farmerName}</p>
+                            <p><strong>Quantity:</strong> ${batch.quantity} kg</p>
+                            <p><strong>Grade:</strong> ${batch.qualityGrade}</p>
+                            <span class="status-badge status-verified">${batch.status}</span>
+                        </div>
+                    `;
+
+                    batchSelect.innerHTML += `<option value="${batch.batchId}">${batch.batchId} - ${batch.herbType}</option>`;
+                }
+            });
+        }
+
+        // Direct function for process form submission
+        function submitProcessForm() {
+            console.log('Submit process form called'); // Debug log
+            
+            const batchId = document.getElementById('batchSelect').value;
+            const processType = document.getElementById('processType').value;
+            const facility = document.getElementById('facility').value;
+            const testResults = document.getElementById('testResults').value;
+
+            if (!batchId || !processType || !facility) {
+                document.getElementById('manufAlert').innerHTML = `
+                    <div class="alert alert-info">
+                        ⚠️ Please fill in all required fields.
+                    </div>
+                `;
+                return;
+            }
+
+            // Show processing message
+            document.getElementById('manufAlert').innerHTML = `
+                <div class="alert alert-info">
+                    <div class="loading"></div> Processing manufacturing transaction...
+                </div>
+            `;
+
+            setTimeout(() => {
+                // Find and update the batch
+                const batchIndex = herbBatches.findIndex(b => b.batchId === batchId);
+                if (batchIndex !== -1) {
+                    herbBatches[batchIndex].status = 'Processed';
+                    herbBatches[batchIndex].processType = processType;
+                    herbBatches[batchIndex].facility = facility;
+                    herbBatches[batchIndex].testResults = testResults || 'Quality tests passed';
+                    herbBatches[batchIndex].processDate = new Date().toISOString();
+
+                    const processData = {
+                        batchId: batchId,
+                        processType: processType,
+                        facility: facility,
+                        testResults: testResults || 'Quality tests passed',
+                        transactionHash: generateHash()
+                    };
+
+                    // Add to blockchain
+                    addToBlockchain('PROCESS', processData);
+                    productsCount++;
+
+                    document.getElementById('manufAlert').innerHTML = `
+                        <div class="alert alert-success">
+                            ✅ Batch processed successfully!<br>
+                            <strong>Batch ID:</strong> ${batchId}<br>
+                            <strong>Process Hash:</strong> ${processData.transactionHash}<br>
+                            <strong>Block Number:</strong> #${blockchainData.length}
+                        </div>
+                    `;
+
+                    updateManufacturerBatches();
+                    updateDashboard();
+                    document.getElementById('processForm').reset();
+                }
+            }, 1200);
+        }
+
+        // Process form submission
+        function initializeProcessForm() {
+            const processForm = document.getElementById('processForm');
+            if (processForm) {
+                processForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    submitProcessForm();
+                });
+            }
+        }
+
+        // Simulate QR code scan
+        function simulateQRScan() {
+            if (herbBatches.length > 0) {
+                const randomBatch = herbBatches[Math.floor(Math.random() * herbBatches.length)];
+                document.getElementById('productId').value = randomBatch.batchId;
+                verifyProduct();
+            } else {
+                document.getElementById('consumerAlert').innerHTML = `
+                    <div class="alert alert-info">
+                        ℹ️ No products available for scanning. Add some herbs first!
+                    </div>
+                `;
+            }
+        }
+
+        // Verify product
+        function verifyProduct() {
+            const productId = document.getElementById('productId').value;
+            const batch = herbBatches.find(b => b.batchId === productId);
+
+            if (batch) {
+                verificationCount++;
+                
+                let traceabilityHtml = `
+                    <div class="herb-card">
+                        <h3>🌿 ${batch.herbType.charAt(0).toUpperCase() + batch.herbType.slice(1)}</h3>
+                        <div class="timeline">
+                            <div class="timeline-item">
+                                <div class="timeline-time">Harvest Stage</div>
+                                <strong>Farmer:</strong> ${batch.farmerName}<br>
+                                <strong>Location:</strong> ${batch.location}<br>
+                                <strong>Coordinates:</strong> ${batch.coordinates}<br>
+                                <strong>Date:</strong> ${new Date(batch.harvestDate).toLocaleDateString()}<br>
+                                <strong>Quality:</strong> Grade ${batch.qualityGrade}<br>
+                                <strong>Quantity:</strong> ${batch.quantity} kg
+                            </div>
+                `;
+
+                if (batch.status === 'Processed') {
+                    traceabilityHtml += `
+                            <div class="timeline-item">
+                                <div class="timeline-time">Processing Stage</div>
+                                <strong>Process:</strong> ${batch.processType}<br>
+                                <strong>Facility:</strong> ${batch.facility}<br>
+                                <strong>Date:</strong> ${new Date(batch.processDate).toLocaleDateString()}<br>
+                                <strong>Test Results:</strong> ${batch.testResults || 'Passed Quality Checks'}
+                            </div>
+                    `;
+                }
+
+                traceabilityHtml += `
+                        </div>
+                        <div class="alert alert-success">
+                            ✅ Product Verified - 100% Authentic Ayurvedic Herb
+                        </div>
+                    </div>
+                `;
+
+                document.getElementById('traceabilityData').innerHTML = traceabilityHtml;
+                document.getElementById('productInfo').style.display = 'block';
+                
+                updateDashboard();
+            } else {
+                document.getElementById('consumerAlert').innerHTML = `
+                    <div class="alert alert-info">
+                        ⚠️ Product ID not found. Please check the ID and try again.
+                    </div>
+                `;
+            }
+        }
+
+        // Search blockchain transaction
+        function searchTransaction() {
+            const searchTerm = document.getElementById('searchHash').value.toLowerCase();
+            const found = blockchainData.find(block => 
+                block.transactionHash.toLowerCase().includes(searchTerm) ||
+                block.data.batchId?.toLowerCase().includes(searchTerm)
+            );
+
+            if (found) {
+                document.getElementById('blockchainAlert').innerHTML = `
+                    <div class="alert alert-success">
+                        ✅ Transaction Found!<br>
+                        <strong>Block #:</strong> ${found.blockNumber}<br>
+                        <strong>Type:</strong> ${found.transactionType}<br>
+                        <strong>Hash:</strong> ${found.transactionHash}<br>
+                        <strong>Time:</strong> ${new Date(found.timestamp).toLocaleString()}<br>
+                        <strong>Data:</strong> ${JSON.stringify(found.data, null, 2).substring(0, 200)}...
+                    </div>
+                `;
+            } else {
+                document.getElementById('blockchainAlert').innerHTML = `
+                    <div class="alert alert-info">
+                        ℹ️ No transaction found with that hash or batch ID.
+                    </div>
+                `;
+            }
+        }
+
+        // Update dashboard statistics
+        function updateDashboard() {
+            document.getElementById('totalBatches').textContent = herbBatches.length;
+            document.getElementById('totalFarmers').textContent = farmersCount;
+            document.getElementById('totalProducts').textContent = productsCount;
+            document.getElementById('verificationCount').textContent = verificationCount;
+
+            updateActivityTimeline();
+        }
+
+        // Update activity timeline
+        function updateActivityTimeline() {
+            const timeline = document.getElementById('activityTimeline');
+            timeline.innerHTML = '';
+
+            const recentBlocks = blockchainData.slice(-10).reverse();
+            
+            recentBlocks.forEach(block => {
+                let activityDescription = '';
+                switch(block.transactionType) {
+                    case 'HARVEST':
+                        activityDescription = `🌱 New ${block.data.herbType} batch harvested by ${block.data.farmerName}`;
+                        break;
+                    case 'PROCESS':
+                        activityDescription = `🏭 Batch ${block.data.batchId} processed via ${block.data.processType}`;
+                        break;
+                    default:
+                        activityDescription = `📦 Transaction: ${block.transactionType}`;
+                }
+
+                timeline.innerHTML += `
+                    <div class="timeline-item">
+                        <div class="timeline-time">${new Date(block.timestamp).toLocaleString()}</div>
+                        ${activityDescription}
+                        <br><small>Hash: ${block.transactionHash}</small>
+                    </div>
+                `;
+            });
+
+            if (recentBlocks.length === 0) {
+                timeline.innerHTML = '<div class="timeline-item">No activity yet. Start by adding some herb batches!</div>';
+            }
+        }
+
+        // Demo data loader
+        function loadDemoData() {
+            // Add some demo data for presentation
+            const demoHerbs = [
+                {
+                    batchId: 'AYUR-DEMO001',
+                    herbType: 'ashwagandha',
+                    farmerName: 'Rajesh Kumar',
+                    location: 'Madhya Pradesh, India',
+                    coordinates: '23.2599, 77.4126',
+                    quantity: '50',
+                    harvestDate: '2024-01-15',
+                    qualityGrade: 'A',
+                    notes: 'Organic cultivation, pesticide-free',
+                    timestamp: new Date('2024-01-15').toISOString(),
+                    status: 'Processed',
+                    transactionHash: '0xa1b2c3d4e5f6',
+                    processType: 'drying',
+                    facility: 'AyurTech Processing Unit, Indore',
+                    testResults: 'Active compounds: 2.8% withanolides, Heavy metals: Within limits',
+                    processDate: new Date('2024-01-20').toISOString()
+                },
+                {
+                    batchId: 'AYUR-DEMO002',
+                    herbType: 'brahmi',
+                    farmerName: 'Priya Sharma',
+                    location: 'Kerala, India',
+                    coordinates: '10.8505, 76.2711',
+                    quantity: '30',
+                    harvestDate: '2024-01-18',
+                    qualityGrade: 'A',
+                    notes: 'Wild collected from pristine wetlands',
+                    timestamp: new Date('2024-01-18').toISOString(),
+                    status: 'Harvested',
+                    transactionHash: '0xf6e5d4c3b2a1'
+                }
+            ];
+
+            demoHerbs.forEach(herb => {
+                herbBatches.push(herb);
+                addToBlockchain(herb.status === 'Processed' ? 'PROCESS' : 'HARVEST', herb);
+            });
+
+            farmersCount = 2;
+            productsCount = 1;
+            verificationCount = 3;
+
+            updateManufacturerBatches();
+            updateDashboard();
+        }
+
+        // Initialize the application
+        function init() {
+            updateDashboard();
+            updateBlockchainViz();
+            
+            // Load demo data after a short delay for better presentation
+            setTimeout(loadDemoData, 1000);
+        }
+
+        // Auto-update demo for presentation
+        function startDemoUpdates() {
+            const herbTypes = ['turmeric', 'neem', 'tulsi', 'amla'];
+            const farmers = ['Amit Patel', 'Sunita Devi', 'Ravi Varma', 'Lakshmi Nair'];
+            const locations = ['Gujarat, India', 'Rajasthan, India', 'Tamil Nadu, India', 'Karnataka, India'];
+            
+            setInterval(() => {
+                if (Math.random() > 0.7) { // 30% chance every 10 seconds
+                    const randomHerb = {
+                        batchId: generateBatchId(),
+                        herbType: herbTypes[Math.floor(Math.random() * herbTypes.length)],
+                        farmerName: farmers[Math.floor(Math.random() * farmers.length)],
+                        location: locations[Math.floor(Math.random() * locations.length)],
+                        coordinates: `${(Math.random() * 20 + 10).toFixed(4)}, ${(Math.random() * 20 + 70).toFixed(4)}`,
+                        quantity: Math.floor(Math.random() * 100 + 20).toString(),
+                        harvestDate: new Date().toISOString().split('T')[0],
+                        qualityGrade: ['A', 'B', 'C'][Math.floor(Math.random() * 3)],
+                        notes: 'Auto-generated demo entry',
+                        timestamp: new Date().toISOString(),
+                        status: 'Harvested',
+                        transactionHash: generateHash()
+                    };
+
+                    herbBatches.push(randomHerb);
+                    addToBlockchain('HARVEST', randomHerb);
+                    farmersCount++;
+                    updateManufacturerBatches();
+                    updateDashboard();
+                }
+            }, 10000); // Every 10 seconds
+        }
+
+        // Add interactive features
+        document.addEventListener('DOMContentLoaded', function() {
+            init();
+            
+            // Initialize form handlers
+            initializeFarmerForm();
+            initializeProcessForm();
+            
+            // Auto-set current date for harvest date
+            const harvestDateField = document.getElementById('harvestDate');
+            if (harvestDateField) {
+                harvestDateField.value = new Date().toISOString().split('T')[0];
+            }
+            
+            // Start demo updates for presentation
+            setTimeout(startDemoUpdates, 3000);
+            
+            // Add keyboard shortcuts for demo
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.key === 'd') {
+                    e.preventDefault();
+                    simulateQRScan();
+                }
+                if (e.ctrlKey && e.key === 'l') {
+                    e.preventDefault();
+                    getLocation();
+                }
+            });
+        });
+
+        // Advanced features for impressive demo
+        
+        // Simulate network latency for realistic blockchain feel
+        function simulateNetworkDelay(callback, delay = 1000) {
+            const loadingElement = document.createElement('div');
+            loadingElement.innerHTML = '<div class="loading"></div> Processing transaction...';
+            loadingElement.style.textAlign = 'center';
+            loadingElement.style.padding = '20px';
+            
+            setTimeout(() => {
+                callback();
+                if (loadingElement.parentNode) {
+                    loadingElement.parentNode.removeChild(loadingElement);
+                }
+            }, delay);
+        }
+
+        // Export data functionality
+        function exportData() {
+            const data = {
+                herbBatches: herbBatches,
+                blockchainData: blockchainData,
+                statistics: {
+                    totalBatches: herbBatches.length,
+                    totalFarmers: farmersCount,
+                    totalProducts: productsCount,
+                    verificationCount: verificationCount
+                }
+            };
+            
+            const dataStr = JSON.stringify(data, null, 2);
+            const dataBlob = new Blob([dataStr], {type: 'application/json'});
+            const url = URL.createObjectURL(dataBlob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = 'ayurtrace_data.json';
+            link.click();
+        }
+
+        // Add export button to dashboard
+        setTimeout(() => {
+            const dashboard = document.getElementById('dashboard');
+            const exportBtn = document.createElement('button');
+            exportBtn.className = 'btn';
+            exportBtn.innerHTML = '📤 Export Data';
+            exportBtn.onclick = exportData;
+            dashboard.appendChild(exportBtn);
+        }, 2000);
+
+        // Impressive animations and effects
+        function addSparkleEffect(element) {
+            const sparkle = document.createElement('div');
+            sparkle.innerHTML = '✨';
+            sparkle.style.position = 'absolute';
+            sparkle.style.fontSize = '20px';
+            sparkle.style.pointerEvents = 'none';
+            sparkle.style.zIndex = '1000';
+            sparkle.style.animation = 'sparkleFloat 2s ease-out forwards';
+            
+            const rect = element.getBoundingClientRect();
+            sparkle.style.left = (rect.left + Math.random() * rect.width) + 'px';
+            sparkle.style.top = (rect.top + Math.random() * rect.height) + 'px';
+            
+            document.body.appendChild(sparkle);
+            
+            setTimeout(() => {
+                document.body.removeChild(sparkle);
+            }, 2000);
+        }
+
+        // Add CSS animation for sparkle effect
+        const sparkleStyle = document.createElement('style');
+        sparkleStyle.textContent = `
+            @keyframes sparkleFloat {
+                0% { transform: translateY(0) scale(0); opacity: 1; }
+                50% { transform: translateY(-20px) scale(1); opacity: 1; }
+                100% { transform: translateY(-40px) scale(0); opacity: 0; }
+            }
+        `;
+        document.head.appendChild(sparkleStyle);
+
+        // Add sparkle effects to buttons on hover
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(btn => {
+                btn.addEventListener('mouseenter', function() {
+                    if (Math.random() > 0.7) {
+                        addSparkleEffect(this);
+                    }
+                });
+            });
+        });
+
+    </script>
+</body>
+</html>

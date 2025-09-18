@@ -3,6 +3,7 @@ import { useAuth } from '../../contexts/AuthContext';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import AnalyticsDashboard from '../../components/analytics/AnalyticsDashboard';
 import SupplyChainMap from '../../components/mapping/SupplyChainMap';
+import localStorageManager from '../../utils/localStorage';
 
 const FarmerDashboard = () => {
   const { user } = useAuth();
@@ -10,28 +11,34 @@ const FarmerDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
   const [activeView, setActiveView] = useState('dashboard');
 
-  // Simulate API call to fetch farmer dashboard data
+  // Fetch farmer dashboard data from local storage
   useEffect(() => {
     const fetchDashboardData = async () => {
       setLoading(true);
       try {
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        // Simulate API delay for demo
+        await new Promise(resolve => setTimeout(resolve, 500));
         
-        // Mock farmer dashboard data
-        const mockData = {
+        // Get real data from local storage
+        const farmerBatches = localStorageManager.getBatches(user?.id);
+        const analytics = localStorageManager.updateAnalytics();
+        
+        const dashboardData = {
           farmStats: {
-            totalBatches: 48,
-            activeBatches: 12,
-            harvestedBatches: 36,
-            totalRevenue: 145000
+            totalBatches: analytics.totalBatches,
+            activeBatches: farmerBatches.filter(b => b.status !== 'Harvested').length,
+            harvestedBatches: farmerBatches.filter(b => b.status === 'Harvested').length,
+            totalRevenue: farmerBatches.length * 25000 // Mock calculation
           },
-          recentBatches: [
-            { id: 'BATCH-F-2024-012', herb: 'Ashwagandha', quantity: '500 kg', quality: 'A', status: 'Harvested', date: '2024-09-15', buyer: 'Ayur Pharma' },
-            { id: 'BATCH-F-2024-013', herb: 'Tulsi', quantity: '300 kg', quality: 'A', status: 'Growing', date: '2024-09-10', buyer: 'Pending' },
-            { id: 'BATCH-F-2024-014', herb: 'Brahmi', quantity: '250 kg', quality: 'B', status: 'Processing', date: '2024-09-08', buyer: 'Natural Extracts' },
-            { id: 'BATCH-F-2024-015', herb: 'Neem', quantity: '400 kg', quality: 'A', status: 'Harvested', date: '2024-09-05', buyer: 'Green Pharma' }
-          ],
+          recentBatches: farmerBatches.slice(0, 4).map(batch => ({
+            id: batch.id,
+            herb: batch.crop,
+            quantity: batch.quantity,
+            quality: batch.quality.charAt(batch.quality.length - 1), // Extract grade letter
+            status: batch.status,
+            date: new Date(batch.updatedAt).toLocaleDateString(),
+            buyer: batch.status === 'Harvested' ? 'Ayur Processing' : 'Pending'
+          })),
           seasonalData: {
             currentSeason: 'Monsoon',
             recommendedHerbs: ['Tulsi', 'Brahmi', 'Neem'],

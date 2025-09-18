@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth');
+const { protect } = require('../middleware/auth');
 
 // Get supply chain analytics data
-router.get('/supply-chain', auth, async (req, res) => {
+router.get('/supply-chain', protect, async (req, res) => {
   try {
     const { timeRange = '30d', region = 'all' } = req.query;
     
@@ -57,7 +57,7 @@ router.get('/supply-chain', auth, async (req, res) => {
 });
 
 // Get real-time batch tracking
-router.get('/tracking/realtime', auth, async (req, res) => {
+router.get('/tracking/realtime', protect, async (req, res) => {
   try {
     const realTimeData = {
       activeBatches: [

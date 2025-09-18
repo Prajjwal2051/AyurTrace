@@ -77,9 +77,16 @@ const LoginPage = () => {
 
   // Quick login with demo credentials
   const handleDemoLogin = (demoUser) => {
+    const passwords = {
+      admin: 'admin123',
+      farmer: 'farmer123',
+      manufacturer: 'manufacturer123',
+      consumer: 'consumer123'
+    };
+    
     setFormData({
-      email: demoUser.email + '@ayurtrace.com', // Reconstruct email with password
-      password: demoUser.role + '123', // Demo password pattern
+      email: demoUser.email, // Use the actual email from demoUser
+      password: passwords[demoUser.role] || demoUser.role + '123',
       rememberMe: false
     });
   };
@@ -134,7 +141,8 @@ const LoginPage = () => {
                     </div>
                     <hr />
                     <small className="text-muted">
-                      <strong>Pattern:</strong> {'{role}'}@ayurtrace.com / {'{role}'}123
+                      <strong>Pattern:</strong> {'{role}'}@example.com / {'{role}'}123<br/>
+                      <strong>Admin:</strong> admin@ayurtrace.com / admin123
                     </small>
                   </div>
                 )}

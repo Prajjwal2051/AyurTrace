@@ -1,9 +1,9 @@
 const express = require('express');
 const router = express.Router();
-const auth = require('../middleware/auth');
+const { protect } = require('../middleware/auth');
 
 // Get supply chain locations
-router.get('/supply-chain-locations', auth, async (req, res) => {
+router.get('/supply-chain-locations', protect, async (req, res) => {
   try {
     const mockMapData = {
       supplyChainLocations: [
@@ -135,7 +135,7 @@ router.get('/supply-chain-locations', auth, async (req, res) => {
 });
 
 // Get batch location tracking
-router.get('/batch-tracking/:batchId', auth, async (req, res) => {
+router.get('/batch-tracking/:batchId', protect, async (req, res) => {
   try {
     const { batchId } = req.params;
     
@@ -192,7 +192,7 @@ router.get('/batch-tracking/:batchId', auth, async (req, res) => {
 });
 
 // Update location (for mobile apps or GPS devices)
-router.post('/update-location', auth, async (req, res) => {
+router.post('/update-location', protect, async (req, res) => {
   try {
     const { batchId, lat, lng, timestamp, additionalData } = req.body;
 
@@ -229,7 +229,7 @@ router.post('/update-location', auth, async (req, res) => {
 });
 
 // Get weather data for locations
-router.get('/weather/:lat/:lng', auth, async (req, res) => {
+router.get('/weather/:lat/:lng', protect, async (req, res) => {
   try {
     const { lat, lng } = req.params;
     

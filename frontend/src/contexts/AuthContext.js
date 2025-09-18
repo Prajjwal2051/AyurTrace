@@ -32,7 +32,7 @@ export const AuthProvider = ({ children }) => {
     },
     farmer: {
       id: 'farmer001', 
-      email: 'farmer@ayurtrace.com',
+      email: 'farmer@example.com',
       password: 'farmer123',
       role: 'farmer',
       name: 'Rajesh Kumar',
@@ -44,8 +44,8 @@ export const AuthProvider = ({ children }) => {
     },
     manufacturer: {
       id: 'mfg001',
-      email: 'manufacturer@ayurtrace.com', 
-      password: 'mfg123',
+      email: 'manufacturer@example.com', 
+      password: 'manufacturer123',
       role: 'manufacturer',
       name: 'Priya Sharma',
       companyName: 'Ayur Processing Co.',
@@ -56,8 +56,8 @@ export const AuthProvider = ({ children }) => {
     },
     consumer: {
       id: 'consumer001',
-      email: 'consumer@ayurtrace.com',
-      password: 'consumer123', 
+      email: 'consumer@example.com',
+      password: 'consumer123',
       role: 'consumer',
       name: 'Anjali Verma',
       permissions: ['verify_products', 'view_journey'],
