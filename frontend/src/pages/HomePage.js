@@ -204,7 +204,7 @@ const HomePage = () => {
   };
 
   return (
-    <AnimationEffects enableSparkles={true} enableParticles={false} enableHoverGlow={true}>
+    <AnimationEffects enableSparkles={false} enableParticles={false} enableHoverGlow={true}>
       <div className="homepage" style={{
         background: getGradient('hero'),
         minHeight: '100vh',
