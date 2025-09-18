@@ -1,0 +1,348 @@
+import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.css';
+import 'leaflet/dist/leaflet.css';
+import './App.css';
+
+// Context
+import { AuthProvider, useAuth } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
+
+// Components
+import LoadingSpinner from './components/common/LoadingSpinner';
+import Navigation from './components/layout/Navigation';
+import Footer from './components/layout/Footer';
+
+// Pages
+import HomePage from './pages/HomePage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage';
+
+// Portal Pages
+import FarmerDashboard from './pages/portals/FarmerDashboard';
+import FarmerBatchForm from './pages/portals/FarmerBatchForm';
+import FarmerBatches from './pages/portals/FarmerBatches';
+
+import ManufacturerDashboard from './pages/portals/ManufacturerDashboard';
+import ManufacturerBatches from './pages/portals/ManufacturerBatches';
+import ManufacturerProcessing from './pages/portals/ManufacturerProcessing';
+
+import ConsumerDashboard from './pages/portals/ConsumerDashboard';
+import ConsumerVerify from './pages/portals/ConsumerVerify';
+import ConsumerJourney from './pages/portals/ConsumerJourney';
+
+import BlockchainViewer from './pages/portals/BlockchainViewer';
+import AnalyticsDashboard from './pages/portals/AnalyticsDashboard';
+
+import AdminDashboard from './pages/admin/AdminDashboard';
+import UserManagement from './pages/admin/UserManagement';
+
+// Profile and Settings
+import ProfilePage from './pages/ProfilePage';
+import SettingsPage from './pages/SettingsPage';
+
+// Error Pages
+import NotFoundPage from './pages/errors/NotFoundPage';
+import UnauthorizedPage from './pages/errors/UnauthorizedPage';
+
+// Protected Route Component
+const ProtectedRoute = ({ children, requiredRole = null, requiredPermission = null }) => {
+  const { user, loading, isAuthenticated } = useAuth();
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (requiredRole && user?.role !== requiredRole) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  if (requiredPermission && !user?.permissions?.includes(requiredPermission)) {
+    return <Navigate to="/unauthorized" replace />;
+  }
+
+  return children;
+};
+
+// Public Route Component (redirect if authenticated)
+const PublicRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return <LoadingSpinner />;
+  }
+
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+};
+
+// Dashboard Redirect Component
+const DashboardRedirect = () => {
+  const { user } = useAuth();
+
+  switch (user?.role) {
+    case 'farmer':
+      return <Navigate to="/farmer/dashboard" replace />;
+    case 'manufacturer':
+      return <Navigate to="/manufacturer/dashboard" replace />;
+    case 'consumer':
+      return <Navigate to="/consumer/dashboard" replace />;
+    case 'admin':
+    case 'gov_admin':
+      return <Navigate to="/admin/dashboard" replace />;
+    default:
+      return <Navigate to="/" replace />;
+  }
+};
+
+// Main App Content Component
+const AppContent = () => {
+  const { loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="d-flex justify-content-center align-items-center min-vh-100">
+        <LoadingSpinner />
+      </div>
+    );
+  }
+
+  return (
+    <div className="App">
+      <Navigation />
+      
+      <main className="main-content">
+        <Routes>
+          {/* Public Routes */}
+          <Route path="/" element={<HomePage />} />
+          
+          <Route
+            path="/login"
+            element={
+              <PublicRoute>
+                <LoginPage />
+              </PublicRoute>
+            }
+          />
+          
+          <Route
+            path="/register"
+            element={
+              <PublicRoute>
+                <RegisterPage />
+              </PublicRoute>
+            }
+          />
+
+          {/* Consumer Routes (Public for verification) */}
+          <Route path="/verify/:batchId" element={<ConsumerVerify />} />
+          <Route path="/journey/:batchId" element={<ConsumerJourney />} />
+
+          {/* Dashboard Redirect */}
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardRedirect />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Farmer Portal */}
+          <Route
+            path="/farmer/dashboard"
+            element={
+              <ProtectedRoute requiredRole="farmer">
+                <FarmerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/farmer/add-batch"
+            element={
+              <ProtectedRoute requiredRole="farmer" requiredPermission="create_batch">
+                <FarmerBatchForm />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/farmer/batches"
+            element={
+              <ProtectedRoute requiredRole="farmer">
+                <FarmerBatches />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Manufacturer Portal */}
+          <Route
+            path="/manufacturer/dashboard"
+            element={
+              <ProtectedRoute requiredRole="manufacturer">
+                <ManufacturerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/manufacturer/batches"
+            element={
+              <ProtectedRoute requiredRole="manufacturer">
+                <ManufacturerBatches />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/manufacturer/processing/:batchId"
+            element={
+              <ProtectedRoute requiredRole="manufacturer" requiredPermission="process_herb">
+                <ManufacturerProcessing />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Consumer Portal */}
+          <Route
+            path="/consumer/dashboard"
+            element={
+              <ProtectedRoute requiredRole="consumer">
+                <ConsumerDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Blockchain Viewer */}
+          <Route
+            path="/blockchain"
+            element={
+              <ProtectedRoute>
+                <BlockchainViewer />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Analytics Dashboard */}
+          <Route
+            path="/analytics"
+            element={
+              <ProtectedRoute requiredPermission="view_analytics">
+                <AnalyticsDashboard />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Admin Routes */}
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute requiredPermission="system_admin">
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute requiredPermission="user_management">
+                <UserManagement />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Profile and Settings */}
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <ProtectedRoute>
+                <SettingsPage />
+              </ProtectedRoute>
+            }
+          />
+
+          {/* Error Routes */}
+          <Route path="/unauthorized" element={<UnauthorizedPage />} />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </main>
+
+      <Footer />
+      
+      {/* Toast Notifications */}
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="colored"
+      />
+    </div>
+  );
+};
+
+// Main App Component
+const App = () => {
+  const [isInitializing, setIsInitializing] = useState(true);
+
+  useEffect(() => {
+    // Initialize app
+    const initializeApp = async () => {
+      try {
+        // Any initialization logic here
+        await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate initialization
+      } catch (error) {
+        console.error('App initialization error:', error);
+      } finally {
+        setIsInitializing(false);
+      }
+    };
+
+    initializeApp();
+  }, []);
+
+  if (isInitializing) {
+    return (
+      <div className="d-flex justify-content-center align-items-center min-vh-100">
+        <div className="text-center">
+          <div className="spinner-border text-primary mb-3" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <h4 className="text-primary">AyurTrace</h4>
+          <p className="text-muted">Initializing application...</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <Router>
+      <ThemeProvider>
+        <AuthProvider>
+          <AppContent />
+        </AuthProvider>
+      </ThemeProvider>
+    </Router>
+  );
+};
+
+export default App;
