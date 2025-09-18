@@ -3,13 +3,17 @@ import { useAuth } from '../../contexts/AuthContext';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import AnalyticsDashboard from '../../components/analytics/AnalyticsDashboard';
 import SupplyChainMap from '../../components/mapping/SupplyChainMap';
+import BlockchainLedger from '../../components/admin/BlockchainLedger';
+import localStorageManager from '../../utils/localStorage';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState(null);
-  const [activeView, setActiveView] = useState('dashboard'); // 'dashboard', 'analytics', 'map'
+  const [activeView, setActiveView] = useState('dashboard'); // 'dashboard', 'analytics', 'map', 'blockchain'
   const [showUserManagement, setShowUserManagement] = useState(false);
+  const [showBlockchainLedger, setShowBlockchainLedger] = useState(false);
+  const [blockchainStats, setBlockchainStats] = useState({});
 
   // Simulate API call to fetch dashboard data
   useEffect(() => {
@@ -19,12 +23,16 @@ const AdminDashboard = () => {
         // Simulate API delay
         await new Promise(resolve => setTimeout(resolve, 1000));
         
-        // Mock dashboard data
+        // Get real blockchain statistics
+        const bcStats = localStorageManager.getBlockchainStatistics();
+        setBlockchainStats(bcStats);
+        
+        // Mock dashboard data with real blockchain stats
         const mockData = {
           systemStats: {
             totalUsers: 1547,
             activeBatches: 892,
-            totalTransactions: 15420,
+            totalTransactions: bcStats.totalTransactions || 15420,
             systemUptime: '99.9%'
           },
           userStats: {
@@ -42,7 +50,7 @@ const AdminDashboard = () => {
           systemHealth: {
             api: { status: 'healthy', responseTime: '45ms' },
             database: { status: 'mock', connectionPool: 'N/A' },
-            blockchain: { status: 'demo', blockHeight: 'Demo Mode' },
+            blockchain: { status: 'healthy', blockHeight: `Block #${bcStats.latestBlock || 'Demo'}` },
             storage: { status: 'healthy', usage: '67%' }
           }
         };
@@ -73,10 +81,17 @@ const AdminDashboard = () => {
               <p className="text-muted mb-0">Welcome back, {user?.name}!</p>
             </div>
             <div className="d-flex gap-2">
-              <button className="btn btn-success" onClick={() => setShowUserManagement(true)}>
-                <i className="fas fa-plus me-2"></i>
-                Add User
-              </button>
+                <button className="btn btn-success" onClick={() => setShowUserManagement(true)}>
+                  <i className="fas fa-plus me-2"></i>
+                  Add User
+                </button>
+                <button 
+                  className="btn btn-warning"
+                  onClick={() => setShowBlockchainLedger(true)}
+                >
+                  <i className="fas fa-link me-2"></i>
+                  Blockchain Ledger
+                </button>
               <div className="btn-group" role="group">
                 <button 
                   className={`btn ${activeView === 'dashboard' ? 'btn-primary' : 'btn-outline-primary'}`}
@@ -91,6 +106,13 @@ const AdminDashboard = () => {
                 >
                   <i className="fas fa-chart-line me-1"></i>
                   Analytics
+                </button>
+                <button 
+                  className={`btn ${activeView === 'blockchain' ? 'btn-primary' : 'btn-outline-primary'}`}
+                  onClick={() => setActiveView('blockchain')}
+                >
+                  <i className="fas fa-link me-1"></i>
+                  Blockchain
                 </button>
                 <button 
                   className={`btn ${activeView === 'map' ? 'btn-primary' : 'btn-outline-primary'}`}
@@ -153,14 +175,17 @@ const AdminDashboard = () => {
               <div className="row no-gutters align-items-center">
                 <div className="col mr-2">
                   <div className="text-xs fw-bold text-info text-uppercase mb-1">
-                    Total Transactions
+                    Blockchain Transactions
                   </div>
                   <div className="h5 mb-0 fw-bold text-gray-800">
-                    {dashboardData?.systemStats.totalTransactions.toLocaleString()}
+                    {blockchainStats.totalTransactions || dashboardData?.systemStats.totalTransactions.toLocaleString()}
                   </div>
+                  <small className="text-muted">
+                    {blockchainStats.recentTransactions || 0} in last 24h
+                  </small>
                 </div>
                 <div className="col-auto">
-                  <i className="fas fa-clipboard-list fa-2x text-success"></i>
+                  <i className="fas fa-link fa-2x text-info"></i>
                 </div>
               </div>
             </div>
@@ -364,9 +389,12 @@ const AdminDashboard = () => {
                   </button>
                 </div>
                 <div className="col-md-3 mb-3">
-                  <button className="btn btn-outline-warning w-100 py-3">
-                    <i className="fas fa-cogs fa-2x mb-2"></i><br />
-                    Settings
+                  <button 
+                    className="btn btn-outline-warning w-100 py-3"
+                    onClick={() => setShowBlockchainLedger(true)}
+                  >
+                    <i className="fas fa-link fa-2x mb-2"></i><br />
+                    Blockchain Ledger
                   </button>
                 </div>
               </div>
@@ -383,6 +411,61 @@ const AdminDashboard = () => {
       {activeView === 'analytics' && (
         <div className="mt-4">
           <AnalyticsDashboard userRole="admin" />
+        </div>
+      )}
+
+      {activeView === 'blockchain' && (
+        <div className="mt-4">
+          <div className="row">
+            <div className="col-12">
+              <div className="card shadow">
+                <div className="card-header py-3">
+                  <h6 className="m-0 fw-bold text-primary">
+                    <i className="fas fa-link me-2"></i>
+                    Blockchain Network Overview
+                  </h6>
+                </div>
+                <div className="card-body">
+                  <div className="row">
+                    <div className="col-md-3 mb-3">
+                      <div className="text-center">
+                        <div className="h4 text-primary mb-1">{blockchainStats.totalTransactions || 0}</div>
+                        <small className="text-muted">Total Transactions</small>
+                      </div>
+                    </div>
+                    <div className="col-md-3 mb-3">
+                      <div className="text-center">
+                        <div className="h4 text-success mb-1">{blockchainStats.uniqueParticipants || 0}</div>
+                        <small className="text-muted">Unique Participants</small>
+                      </div>
+                    </div>
+                    <div className="col-md-3 mb-3">
+                      <div className="text-center">
+                        <div className="h4 text-warning mb-1">#{blockchainStats.latestBlock || 0}</div>
+                        <small className="text-muted">Latest Block</small>
+                      </div>
+                    </div>
+                    <div className="col-md-3 mb-3">
+                      <div className="text-center">
+                        <div className="h4 text-info mb-1">{blockchainStats.totalValue?.toFixed(1) || '0.0'} AYUR</div>
+                        <small className="text-muted">Total Value</small>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="text-center mt-3">
+                    <button 
+                      className="btn btn-primary"
+                      onClick={() => setShowBlockchainLedger(true)}
+                    >
+                      <i className="fas fa-external-link-alt me-2"></i>
+                      Open Full Blockchain Ledger
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       )}
 
@@ -407,6 +490,11 @@ const AdminDashboard = () => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Blockchain Ledger Modal */}
+      {showBlockchainLedger && (
+        <BlockchainLedger onClose={() => setShowBlockchainLedger(false)} />
       )}
     </div>
   );
