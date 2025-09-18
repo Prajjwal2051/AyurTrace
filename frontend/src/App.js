@@ -20,7 +20,7 @@ import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
 
 // Error Pages
-import UnauthorizedPage from './pages/errors/UnauthorizedPage';
+// import UnauthorizedPage from './pages/errors/UnauthorizedPage'; // Removed - no longer needed
 
 // Dashboard Components
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -115,8 +115,7 @@ function App() {
                   } 
                 />
 
-                {/* Error Routes */}
-                <Route path="/unauthorized" element={<UnauthorizedPage />} />
+                {/* Error Routes - Removed /unauthorized route */}
                 
                 {/* 404 Fallback */}
                 <Route 

@@ -27,19 +27,38 @@ const ProtectedRoute = ({
     />;
   }
 
+  // Helper function to get user's appropriate dashboard
+  const getUserDashboard = (userRole) => {
+    switch (userRole) {
+      case 'admin':
+        return '/admin/dashboard';
+      case 'farmer':
+        return '/farmer/dashboard';
+      case 'manufacturer':
+        return '/manufacturer/dashboard';
+      case 'consumer':
+        return '/consumer/dashboard';
+      default:
+        return '/';
+    }
+  };
+
   // Check for specific required role
   if (requiredRole && user?.role !== requiredRole) {
-    return <Navigate to="/unauthorized" replace />;
+    // Redirect to user's appropriate dashboard instead of showing 403
+    return <Navigate to={getUserDashboard(user?.role)} replace />;
   }
 
   // Check for allowed roles (if multiple roles can access)
   if (allowedRoles && !allowedRoles.includes(user?.role)) {
-    return <Navigate to="/unauthorized" replace />;
+    // Redirect to user's appropriate dashboard instead of showing 403
+    return <Navigate to={getUserDashboard(user?.role)} replace />;
   }
 
   // Check for specific permission
   if (requiredPermission && !user?.permissions?.includes(requiredPermission)) {
-    return <Navigate to="/unauthorized" replace />;
+    // Redirect to user's appropriate dashboard instead of showing 403
+    return <Navigate to={getUserDashboard(user?.role)} replace />;
   }
 
   // All checks passed, render the protected component
