@@ -79,6 +79,7 @@ export const AuthProvider = ({ children }) => {
           setIsAuthenticated(true);
         }
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error checking auth status:', error);
         // Clear corrupted data
         localStorage.removeItem('ayurTrace_token');

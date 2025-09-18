@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import localStorageManager from '../utils/localStorage';
 import AnimationEffects, { LoadingAnimation } from '../components/common/AnimationEffects';
@@ -79,6 +79,7 @@ const HomePage = () => {
     };
   };
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     // Load real-time statistics
     const loadStats = () => {
@@ -147,7 +148,10 @@ const HomePage = () => {
         
         setRecentActivity(activities);
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error loading stats:', error);
+      } finally {
+        setIsStatsLoading(false);
       }
     };
 

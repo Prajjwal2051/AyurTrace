@@ -5,7 +5,7 @@ import AnalyticsDashboard from '../../components/analytics/AnalyticsDashboard';
 import SupplyChainMap from '../../components/mapping/SupplyChainMap';
 import HerbRegistrationForm from '../../components/farmer/HerbRegistrationForm';
 import localStorageManager from '../../utils/localStorage';
-import { colorPalette, getGradient, shadows } from '../../styles/colorPalette';
+import { getGradient, shadows } from '../../styles/colorPalette';
 
 const FarmerDashboard = () => {
   const { user } = useAuth();
@@ -72,7 +72,7 @@ const FarmerDashboard = () => {
     };
 
     fetchDashboardData();
-  }, []);
+  }, [user?.id]);
 
   // Handle herb batch submission
   const handleHerbSubmit = (herbData) => {
@@ -83,7 +83,7 @@ const FarmerDashboard = () => {
       crop: herbData.herbType,
       quality: `Grade ${herbData.qualityGrade}`,
       quantity: `${herbData.quantity} kg`,
-      status: 'Growing'
+      status: 'Harvested'
     });
     
     // Close form and refresh data

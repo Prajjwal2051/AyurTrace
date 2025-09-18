@@ -4,6 +4,61 @@ const asyncHandler = require('../middleware/asyncHandler');
 const router = express.Router();
 
 /**
+ * @desc    Get consumer dashboard data
+ * @route   GET /api/consumer/dashboard
+ * @access  Public
+ */
+router.get('/dashboard', asyncHandler(async (req, res) => {
+  // Mock consumer dashboard data
+  const dashboardData = {
+    verificationStats: {
+      totalScans: 24,
+      verifiedProducts: 22,
+      suspiciousProducts: 2,
+      trustedBrands: 8
+    },
+    recentVerifications: [
+      { 
+        id: 'VER-2024-045', 
+        product: 'Ashwagandha Capsules', 
+        brand: 'Ayur Pharma', 
+        batchId: 'BATCH-F-2024-012', 
+        status: 'Verified', 
+        date: '2024-09-15',
+        farmer: 'Rajesh Kumar',
+        location: 'Rishikesh, UK'
+      },
+      { 
+        id: 'VER-2024-046', 
+        product: 'Tulsi Extract', 
+        brand: 'Natural Herbs Co.', 
+        batchId: 'BATCH-F-2024-013', 
+        status: 'Verified', 
+        date: '2024-09-14',
+        farmer: 'Sunita Devi',
+        location: 'Haridwar, UK'
+      },
+      { 
+        id: 'VER-2024-047', 
+        product: 'Brahmi Oil', 
+        brand: 'Pure Ayurveda', 
+        batchId: 'BATCH-F-2024-014', 
+        status: 'Warning', 
+        date: '2024-09-13',
+        farmer: 'Unknown',
+        location: 'Not Available'
+      }
+    ]
+  };
+  
+  res.status(200).json({
+    success: true,
+    message: 'Consumer dashboard data retrieved successfully',
+    data: dashboardData
+  });
+}));
+
+/**
  * @desc    Verify product by batch ID
  * @route   GET /api/consumer/verify/:batchId
  * @access  Public

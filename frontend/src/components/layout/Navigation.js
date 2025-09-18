@@ -25,37 +25,22 @@ const Navigation = () => {
     switch (user.role) {
       case 'admin':
         return [
-          ...baseItems,
-          { path: '/admin/users', label: 'User Management', icon: 'fas fa-users' },
-          { path: '/admin/analytics', label: 'System Analytics', icon: 'fas fa-chart-line' },
-          { path: '/admin/batches', label: 'All Batches', icon: 'fas fa-boxes' },
-          { path: '/admin/settings', label: 'System Settings', icon: 'fas fa-cogs' }
+          ...baseItems
         ];
 
       case 'farmer':
         return [
-          ...baseItems,
-          { path: '/farmer/add-batch', label: 'Add New Batch', icon: 'fas fa-plus-circle' },
-          { path: '/farmer/batches', label: 'My Batches', icon: 'fas fa-seedling' },
-          { path: '/farmer/profile', label: 'Farm Profile', icon: 'fas fa-tractor' },
-          { path: '/farmer/analytics', label: 'My Analytics', icon: 'fas fa-chart-bar' }
+          ...baseItems
         ];
 
       case 'manufacturer':
         return [
-          ...baseItems,
-          { path: '/manufacturer/available-batches', label: 'Available Herbs', icon: 'fas fa-leaf' },
-          { path: '/manufacturer/processing', label: 'Processing', icon: 'fas fa-industry' },
-          { path: '/manufacturer/products', label: 'My Products', icon: 'fas fa-box' },
-          { path: '/manufacturer/quality', label: 'Quality Control', icon: 'fas fa-microscope' }
+          ...baseItems
         ];
 
       case 'consumer':
         return [
-          ...baseItems,
-          { path: '/consumer/verify', label: 'Verify Product', icon: 'fas fa-search' },
-          { path: '/consumer/scanner', label: 'QR Scanner', icon: 'fas fa-qrcode' },
-          { path: '/consumer/history', label: 'My Verifications', icon: 'fas fa-history' }
+          ...baseItems
         ];
 
       default:

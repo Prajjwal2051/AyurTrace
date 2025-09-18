@@ -98,52 +98,47 @@ const LoginPage = () => {
           <div className="col-md-6 col-lg-5">
             {/* Login Card */}
             <div className="card shadow-lg border-0 rounded-lg">
-              <div className="card-header bg-success text-white text-center py-4">
-                <h3 className="mb-0 fw-bold">
+              <div className="card-header bg-success text-white text-center py-3">
+                <h4 className="mb-1 fw-bold">
                   <i className="fas fa-leaf me-2"></i>
-                  Welcome Back to AyurTrace
-                </h3>
-                <p className="mb-0 opacity-75">Sign in to your account</p>
+                  AyurTrace Login
+                </h4>
+                <small className="opacity-75">Sign in to your account</small>
               </div>
               
-              <div className="card-body p-4">
+              <div className="card-body p-3">
                 {/* Demo Credentials Toggle */}
-                <div className="text-center mb-3">
+                <div className="text-center mb-2">
                   <button 
                     type="button"
                     className="btn btn-outline-info btn-sm"
                     onClick={() => setShowDemoCredentials(!showDemoCredentials)}
                   >
                     <i className="fas fa-info-circle me-1"></i>
-                    Show Demo Credentials
+                    Demo Credentials
                   </button>
                 </div>
 
                 {/* Demo Credentials Section */}
                 {showDemoCredentials && (
-                  <div className="alert alert-info mb-4">
-                    <h6 className="alert-heading">
-                      <i className="fas fa-user-circle me-2"></i>
-                      Demo Login Credentials
+                  <div className="alert alert-info mb-3 py-2">
+                    <h6 className="alert-heading mb-2 small">
+                      <i className="fas fa-user-circle me-1"></i>
+                      Quick Login
                     </h6>
-                    <div className="row g-2">
+                    <div className="row g-1">
                       {demoUsers.map((user) => (
                         <div key={user.id} className="col-6">
                           <button
-                            className="btn btn-outline-secondary btn-sm w-100 text-start"
+                            className="btn btn-outline-secondary btn-sm w-100 text-start p-2"
                             onClick={() => handleDemoLogin(user)}
                           >
-                            <div className="fw-bold">{user.role.charAt(0).toUpperCase() + user.role.slice(1)}</div>
+                            <div className="small fw-bold">{user.role.charAt(0).toUpperCase() + user.role.slice(1)}</div>
                             <small className="text-muted">{user.name}</small>
                           </button>
                         </div>
                       ))}
                     </div>
-                    <hr />
-                    <small className="text-muted">
-                      <strong>Pattern:</strong> {'{role}'}@example.com / {'{role}'}123<br/>
-                      <strong>Admin:</strong> admin@ayurtrace.com / admin123
-                    </small>
                   </div>
                 )}
 
@@ -159,13 +154,13 @@ const LoginPage = () => {
                 <form onSubmit={handleSubmit}>
                   {/* Email Field */}
                   <div className="mb-3">
-                    <label htmlFor="email" className="form-label">
-                      <i className="fas fa-envelope me-2"></i>
+                    <label htmlFor="email" className="form-label small">
+                      <i className="fas fa-envelope me-1"></i>
                       Email Address
                     </label>
                     <input
                       type="email"
-                      className={`form-control form-control-lg ${errors.email ? 'is-invalid' : ''}`}
+                      className={`form-control ${errors.email ? 'is-invalid' : ''}`}
                       id="email"
                       name="email"
                       value={formData.email}
@@ -182,14 +177,14 @@ const LoginPage = () => {
 
                   {/* Password Field */}
                   <div className="mb-3">
-                    <label htmlFor="password" className="form-label">
-                      <i className="fas fa-lock me-2"></i>
+                    <label htmlFor="password" className="form-label small">
+                      <i className="fas fa-lock me-1"></i>
                       Password
                     </label>
                     <div className="position-relative">
                       <input
                         type={showPassword ? 'text' : 'password'}
-                        className={`form-control form-control-lg ${errors.password ? 'is-invalid' : ''}`}
+                        className={`form-control ${errors.password ? 'is-invalid' : ''}`}
                         id="password"
                         name="password"
                         value={formData.password}
@@ -214,7 +209,7 @@ const LoginPage = () => {
                   </div>
 
                   {/* Remember Me & Forgot Password */}
-                  <div className="d-flex justify-content-between align-items-center mb-4">
+                  <div className="d-flex justify-content-between align-items-center mb-3">
                     <div className="form-check">
                       <input
                         className="form-check-input"
@@ -224,11 +219,11 @@ const LoginPage = () => {
                         checked={formData.rememberMe}
                         onChange={handleChange}
                       />
-                      <label className="form-check-label" htmlFor="rememberMe">
+                      <label className="form-check-label small" htmlFor="rememberMe">
                         Remember me
                       </label>
                     </div>
-                    <Link to="/forgot-password" className="text-decoration-none">
+                    <Link to="/forgot-password" className="text-decoration-none small">
                       Forgot password?
                     </Link>
                   </div>
@@ -236,7 +231,7 @@ const LoginPage = () => {
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    className="btn btn-success btn-lg w-100 mb-3"
+                    className="btn btn-success w-100 mb-3"
                     disabled={loading}
                   >
                     {loading ? (
@@ -254,67 +249,45 @@ const LoginPage = () => {
                 </form>
 
                 {/* Social Login Options */}
-                <div className="text-center mb-3">
+                <div className="text-center mb-2">
                   <div className="position-relative">
-                    <hr />
-                    <span className="position-absolute top-50 start-50 translate-middle bg-white px-3 text-muted">
+                    <hr className="my-2" />
+                    <span className="position-absolute top-50 start-50 translate-middle bg-white px-2 text-muted small">
                       Or continue with
                     </span>
                   </div>
                 </div>
 
-                <div className="row g-2 mb-4">
+                <div className="row g-2 mb-3">
                   <div className="col-6">
-                    <button className="btn btn-outline-danger w-100" disabled>
-                      <i className="fab fa-google me-2"></i>
-                      Google
+                    <button className="btn btn-outline-danger btn-sm w-100" disabled>
+                      <i className="fab fa-google me-1"></i>
+                      <span className="d-none d-sm-inline">Google</span>
                     </button>
                   </div>
                   <div className="col-6">
-                    <button className="btn btn-outline-info w-100" disabled>
-                      <i className="fas fa-government me-2"></i>
-                      AYUSH Portal
+                    <button className="btn btn-outline-info btn-sm w-100" disabled>
+                      <i className="fas fa-government me-1"></i>
+                      <span className="d-none d-sm-inline">AYUSH</span>
                     </button>
                   </div>
                 </div>
 
                 {/* Sign Up Link */}
                 <div className="text-center">
-                  <span className="text-muted">Don't have an account?</span>
-                  <Link to="/register" className="text-decoration-none ms-2">
+                  <span className="text-muted small">Don't have an account?</span>
+                  <Link to="/register" className="text-decoration-none ms-1 small">
                     <strong>Create Account</strong>
                   </Link>
                 </div>
               </div>
 
               {/* Footer */}
-              <div className="card-footer text-center text-muted py-3">
+              <div className="card-footer text-center text-muted py-2">
                 <small>
-                  Protected by blockchain security
-                  <i className="fas fa-shield-alt ms-2 text-success"></i>
+                  <i className="fas fa-shield-alt me-1 text-success"></i>
+                  Secured by blockchain
                 </small>
-              </div>
-            </div>
-
-            {/* Features */}
-            <div className="row text-center mt-4">
-              <div className="col-4">
-                <div className="text-success mb-2">
-                  <i className="fas fa-shield-check fa-2x"></i>
-                </div>
-                <small className="text-muted">Secure Login</small>
-              </div>
-              <div className="col-4">
-                <div className="text-success mb-2">
-                  <i className="fas fa-user-check fa-2x"></i>
-                </div>
-                <small className="text-muted">Role-Based Access</small>
-              </div>
-              <div className="col-4">
-                <div className="text-success mb-2">
-                  <i className="fas fa-mobile-alt fa-2x"></i>
-                </div>
-                <small className="text-muted">Mobile Friendly</small>
               </div>
             </div>
           </div>

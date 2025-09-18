@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 // Context Providers
@@ -11,7 +11,6 @@ import Navigation from './components/layout/Navigation';
 import Footer from './components/layout/Footer';
 
 // Common Components
-import LoadingSpinner from './components/common/LoadingSpinner';
 import ProtectedRoute, { AdminRoute, FarmerRoute, ManufacturerRoute, ConsumerRoute } from './components/common/ProtectedRoute';
 import DashboardRedirect from './components/common/DashboardRedirect';
 
@@ -23,43 +22,11 @@ import RegisterPage from './pages/RegisterPage';
 // Error Pages
 import UnauthorizedPage from './pages/errors/UnauthorizedPage';
 
-// Admin Components
+// Dashboard Components
 import AdminDashboard from './pages/admin/AdminDashboard';
-
-// Placeholder Dashboard Components (to be created next)
-
-const FarmerDashboard = () => (
-  <div className="container mt-4">
-    <h2>Farmer Dashboard</h2>
-    <p>Welcome to the Farmer Portal! Here you can manage your herb batches, track cultivation, and monitor your farm analytics.</p>
-    <div className="alert alert-info">
-      <i className="fas fa-info-circle me-2"></i>
-      This is a placeholder. Full dashboard features will be implemented next.
-    </div>
-  </div>
-);
-
-const ManufacturerDashboard = () => (
-  <div className="container mt-4">
-    <h2>Manufacturer Dashboard</h2>
-    <p>Welcome to the Manufacturer Portal! Manage processing workflows, quality control, and product inventory.</p>
-    <div className="alert alert-info">
-      <i className="fas fa-info-circle me-2"></i>
-      This is a placeholder. Full dashboard features will be implemented next.
-    </div>
-  </div>
-);
-
-const ConsumerDashboard = () => (
-  <div className="container mt-4">
-    <h2>Consumer Dashboard</h2>
-    <p>Welcome to the Consumer Portal! Verify products, scan QR codes, and view supply chain journeys.</p>
-    <div className="alert alert-info">
-      <i className="fas fa-info-circle me-2"></i>
-      This is a placeholder. Full dashboard features will be implemented next.
-    </div>
-  </div>
-);
+import FarmerDashboard from './pages/farmer/FarmerDashboard';
+import ManufacturerDashboard from './pages/manufacturer/ManufacturerDashboard';
+import ConsumerDashboard from './pages/consumer/ConsumerDashboard';
 
 // Public Route Component (redirect if authenticated)
 const PublicRoute = ({ children }) => {

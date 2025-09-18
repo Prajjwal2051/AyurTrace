@@ -5,12 +5,20 @@ class LocalStorageManager {
     this.initializeData();
   }
 
-  // Initialize default data structure
+  // Force refresh data (for development/debugging)
+  forceRefresh() {
+    this.clearAllData();
+    this.initializeData();
+  }
+
+  // Initialize default data structure  
   initializeData() {
-    if (!this.getData('initialized')) {
+    // Force re-initialization to include BATCH-F-2024-015 data
+    const currentVersion = this.getData('version');
+    if (!this.getData('initialized') || currentVersion !== '1.0.1') {
       const defaultData = {
         initialized: true,
-        version: '1.0.0',
+        version: '1.0.1',
         batches: [
           {
             id: 'BATCH-F-2024-012',
@@ -121,6 +129,24 @@ class LocalStorageManager {
             blockchainHash: '0x1a2b3c4d5e6f7890abcdef1234567890fedcba09',
             createdAt: '2024-08-18T09:00:00Z',
             updatedAt: '2024-08-20T15:30:00Z'
+          },
+          {
+            id: 'MFG-2024-002',
+            batchId: 'BATCH-F-2024-015',
+            manufacturerId: 'mfg002',
+            manufacturerName: 'Arvind Kumar',
+            facilityName: 'Himalayan Herbs Processing - Main Unit',
+            process: 'Traditional Drying & Grinding',
+            qualityTestResult: 'Passed',
+            expectedYield: '550 kg',
+            actualYield: '545 kg',
+            processingNotes: 'Premium turmeric processed using traditional methods for maximum curcumin retention.',
+            processingDate: '2024-07-20',
+            completionDate: '2024-07-25',
+            status: 'Completed',
+            blockchainHash: '0x2b3c4d5e6f7890abcdef1234567890fedcba0987',
+            createdAt: '2024-07-20T10:00:00Z',
+            updatedAt: '2024-07-25T16:45:00Z'
           }
         ],
         products: [
@@ -167,6 +193,28 @@ class LocalStorageManager {
             ],
             createdAt: '2024-08-22T11:00:00Z',
             updatedAt: new Date().toISOString()
+          },
+          {
+            id: 'PROD-M-2024-003',
+            batchId: 'BATCH-F-2024-015',
+            manufacturerId: 'mfg002',
+            manufacturerName: 'Himalayan Herbs Processing',
+            companyName: 'Himalayan Herbs Processing',
+            productName: 'Premium Turmeric Extract',
+            productType: 'Extract',
+            quantity: '1000 bottles',
+            processingDate: '2024-08-25',
+            expiryDate: '2025-08-25',
+            batchNumber: 'TE-2024-003',
+            status: 'Ready for Market',
+            qrCode: 'QR_PROD_M_2024_003',
+            qualityTests: [
+              { test: 'Curcumin Concentration', result: 'Pass', date: '2024-08-26' },
+              { test: 'Stability Test', result: 'Pass', date: '2024-08-26' },
+              { test: 'Bioavailability Test', result: 'Pass', date: '2024-08-27' }
+            ],
+            createdAt: '2024-08-25T14:00:00Z',
+            updatedAt: new Date().toISOString()
           }
         ],
         verifications: [
@@ -179,6 +227,26 @@ class LocalStorageManager {
             status: 'Verified',
             confidence: 98.5,
             location: 'Mumbai, Maharashtra'
+          },
+          {
+            id: 'VER-2024-002',
+            consumerId: 'consumer002',
+            batchId: 'BATCH-F-2024-015',
+            productId: 'PROD-M-2024-002',
+            verificationDate: new Date(Date.now() - 3600000).toISOString(), // 1 hour ago
+            status: 'Verified',
+            confidence: 97.8,
+            location: 'Delhi, NCR'
+          },
+          {
+            id: 'VER-2024-003',
+            consumerId: 'consumer003',
+            batchId: 'BATCH-F-2024-015',
+            productId: 'PROD-M-2024-003',
+            verificationDate: new Date(Date.now() - 7200000).toISOString(), // 2 hours ago
+            status: 'Verified',
+            confidence: 99.2,
+            location: 'Bangalore, Karnataka'
           }
         ],
         blockchainTransactions: [
@@ -301,6 +369,7 @@ class LocalStorageManager {
       const data = localStorage.getItem(this.prefix + key);
       return data ? JSON.parse(data) : null;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Error getting data from localStorage:', error);
       return null;
     }
@@ -311,6 +380,7 @@ class LocalStorageManager {
       localStorage.setItem(this.prefix + key, JSON.stringify(value));
       return true;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Error setting data to localStorage:', error);
       return false;
     }
@@ -321,6 +391,7 @@ class LocalStorageManager {
       localStorage.removeItem(this.prefix + key);
       return true;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Error removing data from localStorage:', error);
       return false;
     }
@@ -378,6 +449,127 @@ class LocalStorageManager {
   getProducts(manufacturerId = null) {
     const products = this.getData('products') || [];
     return manufacturerId ? products.filter(product => product.manufacturerId === manufacturerId) : products;
+  }
+
+  // Get batches available for purchase by manufacturers
+  getAvailableBatchesForPurchase() {
+    const batches = this.getBatches();
+    // Exclude already purchased/processing/completed batches
+    const excludedStatuses = ['Purchased', 'Processing', 'Processing by Manufacturer', 'Manufactured', 'Delivered'];
+    return batches.filter(b => !excludedStatuses.includes(b.status));
+  }
+
+  // Create a manufacturing record from a batch
+  createManufacturingRecordFromBatch(batch, manufacturer) {
+    const records = this.getManufacturingRecords();
+    const newRecord = {
+      id: `MFG-${new Date().getFullYear()}-${String(Date.now()).slice(-3)}`,
+      batchId: batch.id,
+      manufacturerId: manufacturer?.id || 'mfg_demo',
+      manufacturerName: manufacturer?.name || manufacturer?.companyName || 'Demo Manufacturer',
+      facilityName: manufacturer?.facilityName || `${manufacturer?.companyName || 'Processing Facility'} - Unit 1`,
+      process: 'Initial Processing',
+      qualityTestResult: 'Pending',
+      expectedYield: batch.quantity || 'N/A',
+      actualYield: null,
+      processingNotes: 'Auto-generated after purchase',
+      processingDate: new Date().toISOString(),
+      completionDate: null,
+      status: 'Processing',
+      blockchainHash: this.generateBlockchainHash({ batchId: batch.id, ts: Date.now() }),
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    records.push(newRecord);
+    this.setData('manufacturingRecords', records);
+
+    // Add blockchain tx
+    this.addBlockchainTransaction({
+      type: 'manufacturing',
+      from: newRecord.manufacturerName,
+      to: 'AyurTrace Network',
+      batchId: newRecord.batchId,
+      manufacturingId: newRecord.id,
+      value: '2 AYUR',
+      timestamp: newRecord.createdAt,
+      description: `${newRecord.process} started at ${newRecord.facilityName}`
+    });
+
+    return newRecord;
+  }
+
+  // Create a product from a manufacturing record
+  createProductFromManufacturing(manufacturingRecord, productName) {
+    const products = this.getProducts();
+    const newProduct = {
+      id: `PROD-M-${new Date().getFullYear()}-${String(Date.now()).slice(-3)}`,
+      batchId: manufacturingRecord.batchId,
+      manufacturerId: manufacturingRecord.manufacturerId,
+      manufacturerName: manufacturingRecord.manufacturerName,
+      companyName: manufacturingRecord.manufacturerName,
+      productName: productName || `${this.getBatches().find(b => b.id === manufacturingRecord.batchId)?.crop || 'Herb'} Product`,
+      productType: 'Packaged',
+      quantity: '1000 units',
+      processingDate: new Date().toISOString(),
+      expiryDate: `${new Date().getFullYear() + 1}-12-31`,
+      batchNumber: `BN-${String(Date.now()).slice(-5)}`,
+      status: 'Ready for Market',
+      qrCode: `QR_${String(Date.now())}`,
+      qualityTests: [
+        { test: 'Microbiological', result: 'Pass', date: new Date().toISOString().split('T')[0] }
+      ],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    products.push(newProduct);
+    this.setData('products', products);
+
+    // Add blockchain tx
+    this.addBlockchainTransaction({
+      type: 'product_creation',
+      from: newProduct.manufacturerName,
+      to: 'AyurTrace Network',
+      batchId: newProduct.batchId,
+      productId: newProduct.id,
+      value: '3 AYUR',
+      timestamp: newProduct.createdAt,
+      description: `${newProduct.productName} packaged and registered`
+    });
+
+    return newProduct;
+  }
+
+  // Purchase a batch and create downstream records
+  purchaseBatch(batchId, manufacturer) {
+    const batches = this.getBatches();
+    const batch = batches.find(b => b.id === batchId);
+    if (!batch) return null;
+
+    // Mark batch as purchased
+    batch.status = 'Purchased';
+    batch.purchasedBy = manufacturer?.name || manufacturer?.companyName || 'Demo Manufacturer';
+    batch.purchasedAt = new Date().toISOString();
+    this.setData('batches', batches);
+
+    // Blockchain tx: transfer/ownership
+    this.addBlockchainTransaction({
+      type: 'transfer',
+      from: batch.farmerName || 'Farmer',
+      to: batch.purchasedBy,
+      batchId: batch.id,
+      value: '—',
+      timestamp: new Date().toISOString(),
+      description: `Batch ${batch.id} purchased by ${batch.purchasedBy}`
+    });
+
+    // Create manufacturing record and product
+    const mfg = this.createManufacturingRecordFromBatch(batch, manufacturer);
+    const product = this.createProductFromManufacturing(mfg);
+
+    // Update analytics
+    this.updateAnalytics();
+
+    return { batch, manufacturingRecord: mfg, product };
   }
 
   addProduct(product) {
@@ -884,6 +1076,8 @@ class LocalStorageManager {
             const monthAgo = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
             matchesDate = txDate >= monthAgo;
             break;
+          default:
+            break;
         }
       }
       
@@ -931,7 +1125,6 @@ class LocalStorageManager {
       
       // Gas statistics
       const gasUsed = parseInt(tx.gasUsed?.replace(/[^0-9]/g, '') || '0');
-      const gasPrice = parseInt(tx.gasPrice?.replace(/[^0-9]/g, '') || '0');
       stats.totalGasUsed += gasUsed;
       
       // Value statistics
@@ -1077,6 +1270,7 @@ class LocalStorageManager {
       });
       return true;
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Error importing data:', error);
       return false;
     }

@@ -1,22 +1,67 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import localStorageManager from '../../utils/localStorage';
 
 const ManufacturerDashboard = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState(null);
 
-  // Simulate API call to fetch manufacturer dashboard data
+  // Load manufacturer dashboard data from localStorage
   useEffect(() => {
     const fetchDashboardData = async () => {
       setLoading(true);
       try {
-        // Simulate API delay
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        // Mock manufacturer dashboard data
-        const mockData = {
+        await new Promise(resolve => setTimeout(resolve, 400));
+
+        const availableBatches = localStorageManager.getAvailableBatchesForPurchase();
+        const manufacturingRecords = localStorageManager.getManufacturingRecords();
+
+        const manufacturingStats = {
+          totalProducts: localStorageManager.getProducts().length,
+          processingBatches: manufacturingRecords.filter(r => r.status !== 'Completed').length,
+          completedProducts: localStorageManager.getProducts().length,
+          totalRevenue: 2450000
+        };
+
+        // Derive processing queue from manufacturing records
+        const processingQueue = manufacturingRecords.map(r => ({
+          id: r.id,
+          product: `${localStorageManager.getBatches().find(b => b.id === r.batchId)?.crop || 'Herb'} Processing`,
+          stage: r.status === 'Processing' ? 'Processing' : 'Completed',
+          progress: r.status === 'Processing' ? 60 : 100,
+          estimated: r.status === 'Processing' ? '2 days' : 'Done',
+          quality: r.qualityTestResult === 'Passed' ? 'Excellent' : 'Good'
+        }));
+
+        const qualityMetrics = { moistureContent: 8.5, pesticides: 'Below Limit', activeCompounds: 'Optimal', heavyMetals: 'Safe' };
+        const productionChart = [
+          { month: 'Jan', production: 28 },
+          { month: 'Feb', production: 32 },
+          { month: 'Mar', production: 35 },
+          { month: 'Apr', production: 29 },
+          { month: 'May', production: 38 },
+          { month: 'Jun', production: 42 }
+        ];
+
+        const data = {
+          manufacturingStats,
+          availableBatches: availableBatches.map(b => ({
+            id: b.id,
+            farmer: b.farmerName,
+            herb: b.crop,
+            quantity: b.quantity,
+            quality: b.quality?.match(/Grade\s([A-C\+]+)/)?.[1]?.replace('+','') || 'A',
+            price: 200,
+            location: b.location
+          })),
+          processingQueue,
+          qualityMetrics,
+          productionChart
+        };
+
+        setDashboardData(data);
           manufacturingStats: {
             totalProducts: 156,
             processingBatches: 8,
@@ -52,6 +97,7 @@ const ManufacturerDashboard = () => {
         
         setDashboardData(mockData);
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error fetching manufacturer dashboard data:', error);
       } finally {
         setLoading(false);
@@ -76,9 +122,9 @@ const ManufacturerDashboard = () => {
               <p className="text-muted mb-0">Welcome back, {user?.name}! Company: {user?.companyName}</p>
             </div>
             <div className="d-flex gap-2">
-              <button className="btn btn-success">
-                <i className="fas fa-shopping-cart me-2"></i>
-                Purchase Batch
+              <button className="btn btn-success" onClick={() => fetchDashboardData()}>
+                <i className="fas fa-sync me-2"></i>
+                Reload
               </button>
               <button className="btn btn-outline-primary">
                 <i className="fas fa-sync-alt me-2"></i>
@@ -215,7 +261,15 @@ const ManufacturerDashboard = () => {
                         </td>
                         <td>₹{batch.price}</td>
                         <td>
-                          <button className="btn btn-sm btn-success">
+                          <button className="btn btn-sm btn-success" onClick={() => {
+                            const result = localStorageManager.purchaseBatch(batch.id, { id: user?.id, name: user?.name, companyName: user?.companyName });
+                            if (result) {
+                              alert(`Purchased ${batch.id}. Manufacturing: ${result.manufacturingRecord.id}, Product: ${result.product.id}`);
+                              fetchDashboardData();
+                            } else {
+                              alert('Failed to purchase batch.');
+                            }
+                          }}>
                             <i className="fas fa-shopping-cart"></i> Buy
                           </button>
                         </td>

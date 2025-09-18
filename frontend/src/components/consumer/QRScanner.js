@@ -15,6 +15,7 @@ const QRScanner = ({ onScan, onError, onClose }) => {
     setTimeout(() => {
       // This is a mock implementation
       // In a real app, you would integrate with a QR scanning library
+      // eslint-disable-next-line no-console
       console.log('QR Scanner started...');
     }, 500);
   };
@@ -40,9 +41,10 @@ const QRScanner = ({ onScan, onError, onClose }) => {
   };
 
   const simulateSuccessfulScan = () => {
-    // Simulate successful QR scan
-    const mockBatchId = 'BATCH-F-2024-015';
-    onScan(mockBatchId);
+    // Simulate successful QR scan with known batch ID
+    const availableBatchIds = ['BATCH-F-2024-012', 'BATCH-F-2024-013', 'BATCH-F-2024-014', 'BATCH-F-2024-015'];
+    const randomBatchId = availableBatchIds[Math.floor(Math.random() * availableBatchIds.length)];
+    onScan(randomBatchId);
     setIsScanning(false);
   };
 
@@ -73,8 +75,9 @@ const QRScanner = ({ onScan, onError, onClose }) => {
         padding: '0',
         boxShadow: '0 25px 50px rgba(0,0,0,0.15)',
         border: '1px solid rgba(255, 255, 255, 0.2)',
-        width: '90%',
+        width: '95%',
         maxWidth: '600px',
+        maxHeight: '90vh',
         overflow: 'hidden'
       }}>
         <div style={{
@@ -121,7 +124,7 @@ const QRScanner = ({ onScan, onError, onClose }) => {
             ✕
           </button>
         </div>
-        <div style={{ padding: '30px' }}>
+        <div style={{ padding: '15px 20px 20px 20px', maxHeight: 'calc(90vh - 120px)', overflowY: 'auto' }}>
           {/* Scanner Mode Toggle */}
           <div style={{
             display: 'flex',
@@ -220,7 +223,7 @@ const QRScanner = ({ onScan, onError, onClose }) => {
               }}>
                 {!isScanning ? (
                   <div style={{
-                    height: '300px',
+                    height: window.innerWidth < 768 ? '200px' : '300px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -249,7 +252,7 @@ const QRScanner = ({ onScan, onError, onClose }) => {
                   </div>
                 ) : (
                   <div style={{
-                    height: '300px',
+                    height: window.innerWidth < 768 ? '200px' : '300px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
@@ -334,7 +337,12 @@ const QRScanner = ({ onScan, onError, onClose }) => {
                 )}
               </div>
 
-              <div style={{ display: 'flex', gap: '12px', justifyContent: 'center', flexWrap: 'wrap' }}>
+              <div style={{ 
+                display: 'flex', 
+                gap: window.innerWidth < 768 ? '8px' : '12px', 
+                justifyContent: 'center', 
+                flexWrap: 'wrap' 
+              }}>
                 {!isScanning ? (
                   <button
                     style={{

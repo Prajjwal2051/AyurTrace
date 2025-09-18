@@ -82,6 +82,7 @@ const ConsumerDashboard = () => {
         
         setDashboardData(mockData);
       } catch (error) {
+        // eslint-disable-next-line no-console
         console.error('Error fetching consumer dashboard data:', error);
       } finally {
         setLoading(false);
@@ -93,14 +94,19 @@ const ConsumerDashboard = () => {
 
   // Handle QR Scanner
   const handleScanSuccess = (batchId) => {
-    setSelectedBatchId(batchId);
-    setShowScanner(false);
-    setShowJourney(true);
+    if (batchId && batchId.trim()) {
+      setSelectedBatchId(batchId.trim());
+      setShowScanner(false);
+      setShowJourney(true);
+    } else {
+      alert('Invalid batch ID received from scanner');
+    }
   };
 
   const handleScanError = (error) => {
+    // eslint-disable-next-line no-console
     console.error('Scan error:', error);
-    // Could show a toast or alert here
+    alert('QR scanning failed: ' + error);
   };
 
   // Handle Journey View
@@ -121,23 +127,26 @@ const ConsumerDashboard = () => {
   }
 
   return (
-    <div className="container-fluid py-4">
+    <div className="container-fluid py-4" style={{ maxHeight: '100vh', overflowY: 'auto', overflowX: 'hidden' }}>
       {/* Header */}
       <div className="row mb-4">
         <div className="col-12">
-          <div className="d-flex justify-content-between align-items-center">
-            <div>
+          <div className="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+            <div className="mb-3 mb-md-0">
               <h1 className="h2 mb-1">Consumer Dashboard</h1>
-              <p className="text-muted mb-0">Welcome back, {user?.name}! Verify authentic Ayurvedic products.</p>
+              <p className="text-muted mb-0 d-none d-sm-block">Welcome back, {user?.name}! Verify authentic Ayurvedic products.</p>
+              <p className="text-muted mb-0 d-sm-none">Welcome back, {user?.name?.split(' ')[0]}!</p>
             </div>
-            <div className="d-flex gap-2">
-              <button className="btn btn-success" onClick={() => setShowScanner(true)}>
+            <div className="d-flex flex-wrap gap-2 w-100 w-md-auto">
+              <button className="btn btn-success btn-sm" onClick={() => setShowScanner(true)}>
                 <i className="fas fa-qrcode me-2"></i>
-                Scan QR Code
+                <span className="d-none d-md-inline">Scan QR Code</span>
+                <span className="d-md-none">Scan</span>
               </button>
-              <button className="btn btn-outline-primary" onClick={() => setShowProductSearch(true)}>
+              <button className="btn btn-outline-primary btn-sm" onClick={() => setShowProductSearch(true)}>
                 <i className="fas fa-search me-2"></i>
-                Verify Product
+                <span className="d-none d-md-inline">Verify Product</span>
+                <span className="d-md-none">Verify</span>
               </button>
             </div>
           </div>
@@ -146,80 +155,88 @@ const ConsumerDashboard = () => {
 
       {/* Verification Stats Cards */}
       <div className="row mb-4">
-        <div className="col-xl-3 col-md-6 mb-4">
+        <div className="col-6 col-md-6 col-xl-3 mb-3">
           <div className="card shadow h-100 py-2 border-start border-primary border-4">
-            <div className="card-body">
-              <div className="row no-gutters align-items-center">
-                <div className="col mr-2">
+            <div className="card-body p-3">
+              <div className="d-flex align-items-center">
+                <div className="flex-grow-1">
                   <div className="text-xs fw-bold text-primary text-uppercase mb-1">
-                    Total Scans
+                    <span className="d-none d-md-inline">Total Scans</span>
+                    <span className="d-md-none">Scans</span>
                   </div>
                   <div className="h5 mb-0 fw-bold text-gray-800">
                     {dashboardData?.verificationStats.totalScans}
                   </div>
                 </div>
-                <div className="col-auto">
-                  <i className="fas fa-qrcode fa-2x text-success"></i>
+                <div className="ms-2">
+                  <i className="fas fa-qrcode fa-2x text-success d-none d-sm-block"></i>
+                  <i className="fas fa-qrcode fa-lg text-success d-sm-none"></i>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="col-xl-3 col-md-6 mb-4">
+        <div className="col-6 col-md-6 col-xl-3 mb-3">
           <div className="card shadow h-100 py-2 border-start border-success border-4">
-            <div className="card-body">
-              <div className="row no-gutters align-items-center">
-                <div className="col mr-2">
+            <div className="card-body p-3">
+              <div className="d-flex align-items-center">
+                <div className="flex-grow-1">
                   <div className="text-xs fw-bold text-success text-uppercase mb-1">
-                    Verified Products
+                    <span className="d-none d-md-inline">Verified Products</span>
+                    <span className="d-md-none">Verified</span>
                   </div>
                   <div className="h5 mb-0 fw-bold text-gray-800">
                     {dashboardData?.verificationStats.verifiedProducts}
                   </div>
                 </div>
-                <div className="col-auto">
-                  <i className="fas fa-shield-check fa-2x text-success"></i>
+                <div className="ms-2">
+                  <i className="fas fa-shield-check fa-2x text-success d-none d-sm-block"></i>
+                  <i className="fas fa-shield-check fa-lg text-success d-sm-none"></i>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="col-xl-3 col-md-6 mb-4">
+        <div className="col-6 col-md-6 col-xl-3 mb-3">
           <div className="card shadow h-100 py-2 border-start border-warning border-4">
-            <div className="card-body">
-              <div className="row no-gutters align-items-center">
-                <div className="col mr-2">
+            <div className="card-body p-3">
+              <div className="d-flex align-items-center">
+                <div className="flex-grow-1">
                   <div className="text-xs fw-bold text-warning text-uppercase mb-1">
-                    Suspicious Items
+                    <span className="d-none d-md-inline">Suspicious Items</span>
+                    <span className="d-md-none">Suspicious</span>
                   </div>
                   <div className="h5 mb-0 fw-bold text-gray-800">
                     {dashboardData?.verificationStats.suspiciousProducts}
                   </div>
                 </div>
-                <div className="col-auto">
-                  <i className="fas fa-exclamation-triangle fa-2x text-warning"></i>
+                <div className="ms-2">
+                  <i className="fas fa-exclamation-triangle fa-2x text-warning d-none d-sm-block"></i>
+                  <i className="fas fa-exclamation-triangle fa-lg text-warning d-sm-none"></i>
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="col-xl-3 col-md-6 mb-4">
+        <div className="col-6 col-md-6 col-xl-3 mb-3">
           <div className="card shadow h-100 py-2 border-start border-info border-4">
-            <div className="card-body">
-              <div className="row no-gutters align-items-center">
-                <div className="col mr-2">
+            <div className="card-body p-3">
+              <div className="d-flex align-items-center">
+                <div className="flex-grow-1">
                   <div className="text-xs fw-bold text-info text-uppercase mb-1">
-                    Trusted Brands
+                    <span className="d-none d-md-inline">Trusted Brands</span>
+                    <span className="d-md-none">Trusted</span>
                   </div>
                   <div className="h5 mb-0 fw-bold text-gray-800">
                     {dashboardData?.verificationStats.trustedBrands}
                   </div>
                 </div>
-                <div className="col-auto">
-                  <i className="fas fa-award fa-2x text-success"></i>
+                <div className="ms-2">
+                  <i className="fas fa-award fa-2x text-success d-none d-sm-block"></i>
+                  <i className="fas fa-award fa-lg text-success d-sm-none"></i>
                 </div>
               </div>
             </div>
@@ -231,65 +248,115 @@ const ConsumerDashboard = () => {
         {/* Recent Verifications */}
         <div className="col-xl-8 col-lg-7">
           <div className="card shadow mb-4">
-            <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-              <h6 className="m-0 fw-bold text-primary">Recent Verifications</h6>
+            <div className="card-header py-3 d-flex flex-column flex-sm-row align-items-start align-items-sm-center justify-content-between">
+              <h6 className="m-0 fw-bold text-primary mb-2 mb-sm-0">Recent Verifications</h6>
               <button className="btn btn-sm btn-outline-primary">View All</button>
             </div>
             <div className="card-body">
-              <div className="table-responsive">
-                <table className="table table-striped">
-                  <thead>
-                    <tr>
-                      <th>Product</th>
-                      <th>Brand</th>
-                      <th>Status</th>
-                      <th>Farmer</th>
-                      <th>Date</th>
-                      <th>Action</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {dashboardData?.recentVerifications.map(verification => (
-                      <tr key={verification.id}>
-                        <td>
-                          <strong>{verification.product}</strong>
-                          <br />
-                          <code className="small">{verification.batchId}</code>
-                        </td>
-                        <td>{verification.brand}</td>
-                        <td>
-                          <span className={`badge bg-${
-                            verification.status === 'Verified' ? 'success' :
-                            verification.status === 'Warning' ? 'warning' : 'danger'
-                          }`}>
-                            {verification.status === 'Verified' && <i className="fas fa-check me-1"></i>}
-                            {verification.status === 'Warning' && <i className="fas fa-exclamation-triangle me-1"></i>}
-                            {verification.status}
-                          </span>
-                        </td>
-                        <td>
-                          {verification.farmer !== 'Unknown' ? (
-                            <div>
-                              <div>{verification.farmer}</div>
-                              <small className="text-muted">{verification.location}</small>
-                            </div>
-                          ) : (
-                            <em className="text-muted">Not Available</em>
-                          )}
-                        </td>
-                        <td className="text-muted">{verification.date}</td>
-                        <td>
-                          <button 
-                            className="btn btn-sm btn-outline-info"
-                            onClick={() => handleViewJourney(verification.batchId)}
-                          >
-                            <i className="fas fa-route"></i> Journey
-                          </button>
-                        </td>
+              {/* Desktop Table View */}
+              <div className="d-none d-lg-block">
+                <div className="table-responsive">
+                  <table className="table table-striped">
+                    <thead>
+                      <tr>
+                        <th>Product</th>
+                        <th>Brand</th>
+                        <th>Status</th>
+                        <th>Farmer</th>
+                        <th>Date</th>
+                        <th>Action</th>
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {dashboardData?.recentVerifications.map(verification => (
+                        <tr key={verification.id}>
+                          <td>
+                            <strong>{verification.product}</strong>
+                            <br />
+                            <code className="small">{verification.batchId}</code>
+                          </td>
+                          <td>{verification.brand}</td>
+                          <td>
+                            <span className={`badge bg-${
+                              verification.status === 'Verified' ? 'success' :
+                              verification.status === 'Warning' ? 'warning' : 'danger'
+                            }`}>
+                              {verification.status === 'Verified' && <i className="fas fa-check me-1"></i>}
+                              {verification.status === 'Warning' && <i className="fas fa-exclamation-triangle me-1"></i>}
+                              {verification.status}
+                            </span>
+                          </td>
+                          <td>
+                            {verification.farmer !== 'Unknown' ? (
+                              <div>
+                                <div>{verification.farmer}</div>
+                                <small className="text-muted">{verification.location}</small>
+                              </div>
+                            ) : (
+                              <em className="text-muted">Not Available</em>
+                            )}
+                          </td>
+                          <td className="text-muted">{verification.date}</td>
+                          <td>
+                            <button 
+                              className="btn btn-sm btn-outline-info"
+                              onClick={() => handleViewJourney(verification.batchId)}
+                            >
+                              <i className="fas fa-route"></i> Journey
+                            </button>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+
+              {/* Mobile Card View */}
+              <div className="d-lg-none">
+                {dashboardData?.recentVerifications.map(verification => (
+                  <div key={verification.id} className="card mb-3 border-start border-primary border-3">
+                    <div className="card-body p-3">
+                      <div className="d-flex justify-content-between align-items-start mb-2">
+                        <div className="flex-grow-1">
+                          <h6 className="mb-1">{verification.product}</h6>
+                          <div className="small text-muted mb-1">{verification.brand}</div>
+                          <code className="small text-primary">{verification.batchId}</code>
+                        </div>
+                        <span className={`badge bg-${
+                          verification.status === 'Verified' ? 'success' :
+                          verification.status === 'Warning' ? 'warning' : 'danger'
+                        }`}>
+                          {verification.status === 'Verified' && <i className="fas fa-check me-1"></i>}
+                          {verification.status === 'Warning' && <i className="fas fa-exclamation-triangle me-1"></i>}
+                          {verification.status}
+                        </span>
+                      </div>
+                      <div className="row small text-muted mb-2">
+                        <div className="col-6">
+                          <i className="fas fa-user me-1"></i>
+                          {verification.farmer !== 'Unknown' ? verification.farmer : 'Not Available'}
+                        </div>
+                        <div className="col-6 text-end">
+                          <i className="fas fa-calendar me-1"></i>
+                          {verification.date}
+                        </div>
+                      </div>
+                      {verification.location && verification.farmer !== 'Unknown' && (
+                        <div className="small text-muted mb-2">
+                          <i className="fas fa-map-marker-alt me-1"></i>
+                          {verification.location}
+                        </div>
+                      )}
+                      <button 
+                        className="btn btn-sm btn-outline-info w-100"
+                        onClick={() => handleViewJourney(verification.batchId)}
+                      >
+                        <i className="fas fa-route me-2"></i> View Supply Chain Journey
+                      </button>
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -425,29 +492,33 @@ const ConsumerDashboard = () => {
               <h6 className="m-0 fw-bold text-primary">Quick Actions</h6>
             </div>
             <div className="card-body">
-              <div className="row">
-                <div className="col-md-3 mb-3">
-                  <button className="btn btn-outline-success w-100 py-3" onClick={() => setShowScanner(true)}>
-                    <i className="fas fa-qrcode fa-2x mb-2"></i><br />
-                    Scan QR Code
+              <div className="row g-3">
+                <div className="col-6 col-md-3">
+                  <button className="btn btn-outline-success w-100 py-3 d-flex flex-column align-items-center" onClick={() => setShowScanner(true)}>
+                    <i className="fas fa-qrcode fa-2x mb-2 d-none d-sm-block"></i>
+                    <i className="fas fa-qrcode fa-lg mb-1 d-sm-none"></i>
+                    <span className="small">Scan QR Code</span>
                   </button>
                 </div>
-                <div className="col-md-3 mb-3">
-                  <button className="btn btn-outline-primary w-100 py-3" onClick={() => setShowProductSearch(true)}>
-                    <i className="fas fa-search fa-2x mb-2"></i><br />
-                    Search Products
+                <div className="col-6 col-md-3">
+                  <button className="btn btn-outline-primary w-100 py-3 d-flex flex-column align-items-center" onClick={() => setShowProductSearch(true)}>
+                    <i className="fas fa-search fa-2x mb-2 d-none d-sm-block"></i>
+                    <i className="fas fa-search fa-lg mb-1 d-sm-none"></i>
+                    <span className="small">Search Products</span>
                   </button>
                 </div>
-                <div className="col-md-3 mb-3">
-                  <button className="btn btn-outline-info w-100 py-3">
-                    <i className="fas fa-history fa-2x mb-2"></i><br />
-                    My History
+                <div className="col-6 col-md-3">
+                  <button className="btn btn-outline-info w-100 py-3 d-flex flex-column align-items-center">
+                    <i className="fas fa-history fa-2x mb-2 d-none d-sm-block"></i>
+                    <i className="fas fa-history fa-lg mb-1 d-sm-none"></i>
+                    <span className="small">My History</span>
                   </button>
                 </div>
-                <div className="col-md-3 mb-3">
-                  <button className="btn btn-outline-warning w-100 py-3">
-                    <i className="fas fa-flag fa-2x mb-2"></i><br />
-                    Report Issue
+                <div className="col-6 col-md-3">
+                  <button className="btn btn-outline-warning w-100 py-3 d-flex flex-column align-items-center">
+                    <i className="fas fa-flag fa-2x mb-2 d-none d-sm-block"></i>
+                    <i className="fas fa-flag fa-lg mb-1 d-sm-none"></i>
+                    <span className="small">Report Issue</span>
                   </button>
                 </div>
               </div>

@@ -8,12 +8,10 @@ const ConsumerPortal = ({ onClose }) => {
   const [activeTab, setActiveTab] = useState('verify');
   const [scannedData, setScannedData] = useState(null);
   const [verifiedProduct, setVerifiedProduct] = useState(null);
-  const [showScanner, setShowScanner] = useState(false);
 
   const handleQRScan = (data) => {
     if (data) {
       setScannedData(data);
-      setShowScanner(false);
       setActiveTab('verify'); // Switch to verification tab
     }
   };

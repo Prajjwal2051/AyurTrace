@@ -18,9 +18,16 @@ const SupplyChainJourney = ({ batchId, onClose }) => {
 
         // Get real journey data from local storage
         const realJourneyData = localStorageManager.getSupplyChainJourney(batchId);
+        // eslint-disable-next-line no-console
+        console.log('Journey lookup for batchId:', batchId);
+        // eslint-disable-next-line no-console
+        console.log('Available batches:', localStorageManager.getBatches().map(b => b.id));
+        // eslint-disable-next-line no-console
+        console.log('Journey data found:', !!realJourneyData);
         
         if (!realJourneyData) {
-          setError(`Batch ${batchId} not found in the system. Try: BATCH-F-2024-012, BATCH-F-2024-013, or BATCH-F-2024-014`);
+          const availableBatches = localStorageManager.getBatches().map(b => b.id).join(', ');
+          setError(`Batch ${batchId} not found in the system. Available batches: ${availableBatches}`);
           return;
         }
 
@@ -129,6 +136,7 @@ const SupplyChainJourney = ({ batchId, onClose }) => {
         setJourneyData(transformedData);
       } catch (error) {
         setError('Failed to fetch journey data. Please try again.');
+        // eslint-disable-next-line no-console
         console.error('Error fetching journey data:', error);
       } finally {
         setLoading(false);

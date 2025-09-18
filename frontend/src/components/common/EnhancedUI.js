@@ -413,7 +413,7 @@ export const RippleButton = ({
   );
 };
 
-export default {
+const EnhancedUI = {
   ProgressBar,
   GlassCard,
   AnimatedCounter,
@@ -421,3 +421,5 @@ export default {
   Tooltip,
   RippleButton
 };
+
+export default EnhancedUI;

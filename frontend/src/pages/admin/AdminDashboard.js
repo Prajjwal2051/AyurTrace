@@ -71,61 +71,55 @@ const AdminDashboard = () => {
   }
 
   return (
-    <div className="container-fluid py-4">
-      {/* Header */}
-      <div className="row mb-4">
-        <div className="col-12">
-          <div className="d-flex justify-content-between align-items-center">
-            <div>
-              <h1 className="h2 mb-1">Admin Dashboard</h1>
-              <p className="text-muted mb-0">Welcome back, {user?.name}!</p>
-            </div>
-            <div className="d-flex gap-2">
-                <button className="btn btn-success" onClick={() => setShowUserManagement(true)}>
-                  <i className="fas fa-plus me-2"></i>
-                  Add User
-                </button>
-                <button 
-                  className="btn btn-warning"
-                  onClick={() => setShowBlockchainLedger(true)}
-                >
-                  <i className="fas fa-link me-2"></i>
-                  Blockchain Ledger
-                </button>
-              <div className="btn-group" role="group">
-                <button 
-                  className={`btn ${activeView === 'dashboard' ? 'btn-primary' : 'btn-outline-primary'}`}
-                  onClick={() => setActiveView('dashboard')}
-                >
-                  <i className="fas fa-tachometer-alt me-1"></i>
-                  Dashboard
-                </button>
-                <button 
-                  className={`btn ${activeView === 'analytics' ? 'btn-primary' : 'btn-outline-primary'}`}
-                  onClick={() => setActiveView('analytics')}
-                >
-                  <i className="fas fa-chart-line me-1"></i>
-                  Analytics
-                </button>
-                <button 
-                  className={`btn ${activeView === 'blockchain' ? 'btn-primary' : 'btn-outline-primary'}`}
-                  onClick={() => setActiveView('blockchain')}
-                >
-                  <i className="fas fa-link me-1"></i>
-                  Blockchain
-                </button>
-                <button 
-                  className={`btn ${activeView === 'map' ? 'btn-primary' : 'btn-outline-primary'}`}
-                  onClick={() => setActiveView('map')}
-                >
-                  <i className="fas fa-map me-1"></i>
-                  Supply Chain Map
-                </button>
+    <div className="min-vh-100" style={{ background: 'linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%)' }}>
+      <div className="container-fluid py-4">
+        {/* Header */}
+        <div className="row mb-4">
+          <div className="col-12">
+            <div className="card border-0 shadow-sm" style={{ background: 'rgba(255, 255, 255, 0.9)', backdropFilter: 'blur(10px)' }}>
+              <div className="card-body p-4">
+                <div className="d-flex flex-column flex-lg-row justify-content-between align-items-start align-items-lg-center">
+                  <div className="mb-3 mb-lg-0">
+                    <h1 className="h3 mb-2 fw-bold text-dark">🛡️ Admin Dashboard</h1>
+                    <p className="text-muted mb-0">Welcome back, <span className="fw-semibold">{user?.name}</span>! System oversight and management</p>
+                  </div>
+                  <div className="d-flex flex-wrap gap-2">
+                    <div className="btn-group" role="group">
+                      <button 
+                        className={`btn btn-sm ${activeView === 'dashboard' ? 'btn-primary' : 'btn-outline-primary'}`}
+                        onClick={() => setActiveView('dashboard')}
+                      >
+                        <i className="fas fa-tachometer-alt me-1"></i>
+                        <span className="d-none d-md-inline">Overview</span>
+                      </button>
+                      <button 
+                        className={`btn btn-sm ${activeView === 'analytics' ? 'btn-primary' : 'btn-outline-primary'}`}
+                        onClick={() => setActiveView('analytics')}
+                      >
+                        <i className="fas fa-chart-line me-1"></i>
+                        <span className="d-none d-md-inline">Analytics</span>
+                      </button>
+                      <button 
+                        className={`btn btn-sm ${activeView === 'blockchain' ? 'btn-primary' : 'btn-outline-primary'}`}
+                        onClick={() => setActiveView('blockchain')}
+                      >
+                        <i className="fas fa-link me-1"></i>
+                        <span className="d-none d-md-inline">Blockchain</span>
+                      </button>
+                      <button 
+                        className={`btn btn-sm ${activeView === 'map' ? 'btn-primary' : 'btn-outline-primary'}`}
+                        onClick={() => setActiveView('map')}
+                      >
+                        <i className="fas fa-map me-1"></i>
+                        <span className="d-none d-lg-inline">Map</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
 
       {/* System Stats Cards */}
       <div className="row mb-4">
@@ -492,10 +486,11 @@ const AdminDashboard = () => {
         </div>
       )}
 
-      {/* Blockchain Ledger Modal */}
-      {showBlockchainLedger && (
-        <BlockchainLedger onClose={() => setShowBlockchainLedger(false)} />
-      )}
+        {/* Blockchain Ledger Modal */}
+        {showBlockchainLedger && (
+          <BlockchainLedger onClose={() => setShowBlockchainLedger(false)} />
+        )}
+      </div>
     </div>
   );
 };

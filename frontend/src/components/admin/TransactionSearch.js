@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { colorPalette, getGradient, shadows } from '../../styles/colorPalette';
-import localStorageManager from '../../utils/localStorage';
 
 const TransactionSearch = ({ onTransactionFound, transactions }) => {
   const [searchQuery, setSearchQuery] = useState('');
@@ -37,9 +36,9 @@ const TransactionSearch = ({ onTransactionFound, transactions }) => {
     } else {
       setSearchResults([]);
     }
-  }, [searchQuery, searchType, selectedFilters, transactions]);
+  }, [performSearch, searchQuery]);
 
-  const performSearch = async () => {
+  const performSearch = React.useCallback(async () => {
     setIsSearching(true);
     
     try {
@@ -97,6 +96,8 @@ const TransactionSearch = ({ onTransactionFound, transactions }) => {
           case 'year':
             filterDate.setFullYear(now.getFullYear() - 1);
             break;
+          default:
+            break;
         }
 
         if (selectedFilters.dateRange !== 'all') {
@@ -119,12 +120,13 @@ const TransactionSearch = ({ onTransactionFound, transactions }) => {
 
       setSearchResults(results);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Search error:', error);
       setSearchResults([]);
     } finally {
       setIsSearching(false);
     }
-  };
+  }, [searchQuery, searchType, selectedFilters, transactions]);
 
   const handleSampleSearch = (sample) => {
     setSearchQuery(sample.query);

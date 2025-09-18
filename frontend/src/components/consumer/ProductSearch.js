@@ -123,9 +123,9 @@ const ProductSearch = ({ onClose, onSelectProduct }) => {
 
   useEffect(() => {
     performSearch();
-  }, [searchTerm, filters, sortBy]);
+  }, [performSearch]);
 
-  const performSearch = async () => {
+  const performSearch = React.useCallback(async () => {
     setLoading(true);
     
     // Simulate API delay
@@ -167,7 +167,7 @@ const ProductSearch = ({ onClose, onSelectProduct }) => {
 
     setResults(filteredResults);
     setLoading(false);
-  };
+  }, [searchTerm, filters, sortBy]);
 
   const handleFilterChange = (filterType, value) => {
     setFilters(prev => ({
@@ -240,8 +240,8 @@ const ProductSearch = ({ onClose, onSelectProduct }) => {
             </div>
 
             {/* Filters */}
-            <div className="row mb-4">
-              <div className="col-md-2">
+            <div className="row mb-4 g-3">
+              <div className="col-6 col-md-3 col-lg-2">
                 <label className="form-label small text-muted">Category</label>
                 <select 
                   className="form-select form-select-sm"
@@ -255,7 +255,7 @@ const ProductSearch = ({ onClose, onSelectProduct }) => {
                   ))}
                 </select>
               </div>
-              <div className="col-md-2">
+              <div className="col-6 col-md-3 col-lg-2">
                 <label className="form-label small text-muted">Grade</label>
                 <select 
                   className="form-select form-select-sm"
@@ -269,7 +269,7 @@ const ProductSearch = ({ onClose, onSelectProduct }) => {
                   ))}
                 </select>
               </div>
-              <div className="col-md-2">
+              <div className="col-6 col-md-3 col-lg-2">
                 <label className="form-label small text-muted">Certification</label>
                 <select 
                   className="form-select form-select-sm"
@@ -283,10 +283,18 @@ const ProductSearch = ({ onClose, onSelectProduct }) => {
                   ))}
                 </select>
               </div>
-              <div className="col-md-4">
-                <label className="form-label small text-muted">&nbsp;</label>
-                <div>
-                  <button className="btn btn-outline-secondary btn-sm me-2" onClick={clearFilters}>
+              <div className="col-6 col-md-3 col-lg-2">
+                <label className="form-label small text-muted">Quick Scan</label>
+                <button className="btn btn-success btn-sm w-100">
+                  <i className="fas fa-qrcode me-1"></i>
+                  <span className="d-none d-sm-inline">QR Scan</span>
+                  <span className="d-sm-none">Scan</span>
+                </button>
+              </div>
+              <div className="col-12 col-lg-4">
+                <label className="form-label small text-muted d-none d-lg-block">&nbsp;</label>
+                <div className="d-flex flex-column flex-sm-row align-items-start align-items-sm-center gap-2">
+                  <button className="btn btn-outline-secondary btn-sm" onClick={clearFilters}>
                     <i className="fas fa-times me-1"></i>
                     Clear Filters
                   </button>
@@ -294,13 +302,6 @@ const ProductSearch = ({ onClose, onSelectProduct }) => {
                     {results.length} products found
                   </span>
                 </div>
-              </div>
-              <div className="col-md-2">
-                <label className="form-label small text-muted">Quick Scan</label>
-                <button className="btn btn-success btn-sm w-100">
-                  <i className="fas fa-qrcode me-1"></i>
-                  QR Scan
-                </button>
               </div>
             </div>
 
@@ -327,7 +328,7 @@ const ProductSearch = ({ onClose, onSelectProduct }) => {
                   </div>
                 ) : (
                   results.map(product => (
-                    <div key={product.id} className="col-md-6 col-lg-4 mb-4">
+                    <div key={product.id} className="col-12 col-sm-6 col-lg-4 col-xl-3 mb-4">
                       <div className="card h-100 shadow-sm">
                         <div className="card-body">
                           <div className="d-flex justify-content-between align-items-start mb-2">

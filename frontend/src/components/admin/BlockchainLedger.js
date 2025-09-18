@@ -70,9 +70,10 @@ const BlockchainLedger = ({ onClose }) => {
     };
   }, [liveUpdateEnabled]);
 
+  // eslint-disable-next-line no-use-before-define
   useEffect(() => {
     applyFilters();
-  }, [transactions, filterType, searchQuery]);
+  }, [applyFilters]);
 
   const loadTransactions = async () => {
     setIsLoading(true);
@@ -87,13 +88,14 @@ const BlockchainLedger = ({ onClose }) => {
       
       setTransactions(sortedTransactions);
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Error loading transactions:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
-  const applyFilters = () => {
+  const applyFilters = React.useCallback(() => {
     let filtered = [...transactions];
 
     // Apply type filter
@@ -115,7 +117,7 @@ const BlockchainLedger = ({ onClose }) => {
     }
 
     setFilteredTransactions(filtered);
-  };
+  }, [transactions, filterType, searchQuery]);
 
   const handleTransactionClick = (transaction) => {
     setSelectedTransaction(transaction);

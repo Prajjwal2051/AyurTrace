@@ -16,16 +16,16 @@ const Footer = () => {
               Revolutionizing Ayurvedic herb supply chain with blockchain technology for authentic, traceable, and trusted products.
             </p>
             <div className="d-flex gap-3">
-              <a href="#" className="text-light" aria-label="Facebook">
+              <a href="https://facebook.com/AyurTrace" className="text-light" aria-label="Facebook" target="_blank" rel="noopener noreferrer">
                 <i className="fab fa-facebook fa-lg"></i>
               </a>
-              <a href="#" className="text-light" aria-label="Twitter">
+              <a href="https://twitter.com/AyurTrace" className="text-light" aria-label="Twitter" target="_blank" rel="noopener noreferrer">
                 <i className="fab fa-twitter fa-lg"></i>
               </a>
-              <a href="#" className="text-light" aria-label="LinkedIn">
+              <a href="https://linkedin.com/company/ayurtrace" className="text-light" aria-label="LinkedIn" target="_blank" rel="noopener noreferrer">
                 <i className="fab fa-linkedin fa-lg"></i>
               </a>
-              <a href="#" className="text-light" aria-label="Instagram">
+              <a href="https://instagram.com/ayurtrace" className="text-light" aria-label="Instagram" target="_blank" rel="noopener noreferrer">
                 <i className="fab fa-instagram fa-lg"></i>
               </a>
             </div>

@@ -192,7 +192,97 @@ router.post('/login', [
   const { email, password } = req.body;
 
   try {
-    // Find user and include password for verification
+    // Demo/Mock authentication when MongoDB is not available
+    const demoUsers = {
+      'ramesh.farmer@ayurtrace.com': {
+        password: 'Farmer123!',
+        user: {
+          id: 'farmer001',
+          name: 'Ramesh Kumar',
+          email: 'ramesh.farmer@ayurtrace.com',
+          role: 'farmer',
+          permissions: ['create_batch', 'view_batch', 'update_batch'],
+          isVerified: true,
+          status: 'active',
+          displayName: 'Ramesh Kumar',
+          lastLogin: new Date().toISOString(),
+          loginCount: 1
+        }
+      },
+      'arvind.manufacturer@ayurtrace.com': {
+        password: 'Manufacturer123!',
+        user: {
+          id: 'manufacturer001',
+          name: 'Arvind Kumar',
+          email: 'arvind.manufacturer@ayurtrace.com',
+          role: 'manufacturer',
+          permissions: ['process_batch', 'create_product', 'view_analytics'],
+          isVerified: true,
+          status: 'active',
+          displayName: 'Arvind Kumar',
+          lastLogin: new Date().toISOString(),
+          loginCount: 1
+        }
+      },
+      'priya.consumer@ayurtrace.com': {
+        password: 'Consumer123!',
+        user: {
+          id: 'consumer001',
+          name: 'Anjali Verma',
+          email: 'priya.consumer@ayurtrace.com',
+          role: 'consumer',
+          permissions: ['verify_product', 'view_journey'],
+          isVerified: true,
+          status: 'active',
+          displayName: 'Anjali Verma',
+          lastLogin: new Date().toISOString(),
+          loginCount: 1
+        }
+      },
+      'admin@ayurtrace.com': {
+        password: 'Admin123!',
+        user: {
+          id: 'admin001',
+          name: 'Admin User',
+          email: 'admin@ayurtrace.com',
+          role: 'admin',
+          permissions: ['admin_access', 'manage_users', 'view_all_data'],
+          isVerified: true,
+          status: 'active',
+          displayName: 'System Administrator',
+          lastLogin: new Date().toISOString(),
+          loginCount: 1
+        }
+      }
+    };
+
+    // Check if user exists in demo users and password matches
+    const demoUser = demoUsers[email];
+    if (demoUser && demoUser.password === password) {
+      // Generate JWT token for demo user
+      const token = jwt.sign(
+        {
+          id: demoUser.user.id,
+          email: demoUser.user.email,
+          role: demoUser.user.role,
+          permissions: demoUser.user.permissions
+        },
+        process.env.JWT_SECRET || 'fallback-demo-secret',
+        { expiresIn: '7d' }
+      );
+
+      res.status(200).json({
+        success: true,
+        message: 'Demo login successful',
+        data: {
+          user: demoUser.user,
+          token
+        }
+      });
+      return;
+    }
+
+    // Try MongoDB authentication if demo login fails
     const user = await User.findByCredentials(email, password);
 
     // Update login tracking

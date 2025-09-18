@@ -160,6 +160,7 @@ const ProductVerification = ({ initialData, onVerified, onScanRequest }) => {
       }
 
     } catch (error) {
+      // eslint-disable-next-line no-console
       console.error('Verification error:', error);
       setVerificationResult({
         type: verificationMode,

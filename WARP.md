@@ -147,8 +147,12 @@ npm run test:integration
 ### Frontend Architecture (`frontend/src/`)
 - **Routing**: React Router with role-based protected routes
 - **Authentication**: Context-based auth state management with JWT tokens
-- **Portal System**: Separate dashboards for Farmer, Manufacturer, Consumer, Admin roles
-- **Components**: Reusable UI components in `components/` directory
+- **Portal System**: Fully implemented dashboards for all roles:
+  - `pages/farmer/FarmerDashboard.js` - Farm management, batch creation, analytics
+  - `pages/manufacturer/ManufacturerDashboard.js` - Processing workflows, batch purchasing
+  - `pages/consumer/ConsumerDashboard.js` - QR scanning, product verification, supply chain journey
+  - `pages/admin/AdminDashboard.js` - System administration, user management
+- **Components**: Reusable UI components in `components/` directory with role-specific components
 - **API Integration**: Axios-based API services with error handling
 - **Styling**: Bootstrap 5 with custom CSS, responsive mobile-first design
 
@@ -180,6 +184,33 @@ npm run test:integration
 - **Interactive Maps**: Visual journey from farm to consumer
 - **Farmer Profiles**: Stories and photos for consumer connection
 - **Real-time Updates**: WebSocket integration for live status changes
+
+## Portal Features (Fully Implemented)
+
+### Farmer Dashboard (`pages/farmer/FarmerDashboard.js`)
+- **Farm Statistics**: Total batches, active batches, harvest tracking, revenue metrics
+- **Herb Registration**: Complete form with GPS capture, quality grading, image uploads
+- **Batch Management**: View recent batches, status tracking, buyer information
+- **Seasonal Information**: Current season, recommended herbs, weather alerts, soil conditions
+- **Analytics Views**: Farm overview, analytics charts, location mapping
+- **Quality Distribution**: Visual breakdown of Grade A/B/C production
+- **Monthly Earnings**: Revenue tracking and trends
+
+### Manufacturer Dashboard (`pages/manufacturer/ManufacturerDashboard.js`)
+- **Manufacturing Statistics**: Total products, processing batches, completion rates, revenue
+- **Batch Procurement**: Available herb batches from farmers, quality/price comparison
+- **Processing Queue**: Active processing stages, progress tracking, quality metrics
+- **Lab Integration**: Moisture content, pesticide levels, active compounds, heavy metals
+- **Production Analytics**: Monthly production charts, capacity utilization
+- **Quality Control**: Real-time quality metrics and compliance monitoring
+
+### Consumer Dashboard (`pages/consumer/ConsumerDashboard.js`)
+- **Product Verification**: QR code scanning, authenticity checking, batch verification
+- **Supply Chain Journey**: Complete farm-to-shelf traceability with interactive maps
+- **Verification History**: Recent scans, verified products, suspicious product alerts
+- **Trusted Sources**: Farmer profiles, farm ratings, product recommendations
+- **Health Tips**: Educational content about authentic Ayurvedic products
+- **Product Search**: Alternative verification method for products without QR codes
 
 ## Environment Configuration
 

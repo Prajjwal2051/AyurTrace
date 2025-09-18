@@ -76,6 +76,7 @@ const QRCodeScanner = ({ onScan, onClose }) => {
       }
 
     } catch (err) {
+      // eslint-disable-next-line no-console
       console.error('Camera access error:', err);
       setError('Camera access denied. Please enable camera permissions or use simulation mode.');
       setHasPermission(false);
@@ -123,6 +124,11 @@ const QRCodeScanner = ({ onScan, onClose }) => {
       padding: '35px'
     }}>
       <div className="consumer-portal-content">
+        {hasPermission === false && (
+          <div className="alert alert-warning" role="alert">
+            Camera permission denied. Please enable camera access or use simulation mode.
+          </div>
+        )}
         {/* Scanner Mode Toggle */}
         <div style={{
           display: 'flex',

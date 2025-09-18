@@ -4,7 +4,6 @@ import localStorageManager from '../../utils/localStorage';
 
 const TransactionDetails = ({ transaction, onBack }) => {
   const [showRawData, setShowRawData] = useState(false);
-  const [relatedTransactions, setRelatedTransactions] = useState([]);
 
   if (!transaction) {
     return (

@@ -72,7 +72,7 @@ const SupplyChainVisualization = ({ batchId, interactive = true, showDetails = t
       }, 2000);
       return () => clearInterval(interval);
     }
-  }, [isPlaying, interactive]);
+  }, [isPlaying, interactive, defaultSteps.length]);
 
   const handleStepClick = (stepIndex) => {
     if (interactive) {
