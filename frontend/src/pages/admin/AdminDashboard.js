@@ -1,0 +1,358 @@
+import React, { useState, useEffect } from 'react';
+import { useAuth } from '../../contexts/AuthContext';
+import LoadingSpinner from '../../components/common/LoadingSpinner';
+
+const AdminDashboard = () => {
+  const { user } = useAuth();
+  const [loading, setLoading] = useState(true);
+  const [dashboardData, setDashboardData] = useState(null);
+
+  // Simulate API call to fetch dashboard data
+  useEffect(() => {
+    const fetchDashboardData = async () => {
+      setLoading(true);
+      try {
+        // Simulate API delay
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Mock dashboard data
+        const mockData = {
+          systemStats: {
+            totalUsers: 1547,
+            activeBatches: 892,
+            totalTransactions: 15420,
+            systemUptime: '99.9%'
+          },
+          userStats: {
+            farmers: 645,
+            manufacturers: 178,
+            consumers: 724,
+            admins: 15
+          },
+          recentActivity: [
+            { id: 1, type: 'user_registration', user: 'Rajesh Kumar', role: 'farmer', time: '2 minutes ago' },
+            { id: 2, type: 'batch_created', user: 'Green Valley Farm', batch: 'BATCH-2024-001', time: '5 minutes ago' },
+            { id: 3, type: 'product_verified', user: 'Consumer', batch: 'BATCH-2024-001', time: '8 minutes ago' },
+            { id: 4, type: 'quality_test', user: 'Ayur Labs', batch: 'BATCH-2024-002', time: '15 minutes ago' }
+          ],
+          systemHealth: {
+            api: { status: 'healthy', responseTime: '45ms' },
+            database: { status: 'mock', connectionPool: 'N/A' },
+            blockchain: { status: 'demo', blockHeight: 'Demo Mode' },
+            storage: { status: 'healthy', usage: '67%' }
+          }
+        };
+        
+        setDashboardData(mockData);
+      } catch (error) {
+        console.error('Error fetching dashboard data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDashboardData();
+  }, []);
+
+  if (loading) {
+    return <LoadingSpinner fullScreen={true} text="Loading admin dashboard..." />;
+  }
+
+  return (
+    <div className="container-fluid py-4">
+      {/* Header */}
+      <div className="row mb-4">
+        <div className="col-12">
+          <div className="d-flex justify-content-between align-items-center">
+            <div>
+              <h1 className="h2 mb-1">Admin Dashboard</h1>
+              <p className="text-muted mb-0">Welcome back, {user?.name}!</p>
+            </div>
+            <div className="d-flex gap-2">
+              <button className="btn btn-outline-success">
+                <i className="fas fa-download me-2"></i>
+                Export Data
+              </button>
+              <button className="btn btn-success">
+                <i className="fas fa-sync-alt me-2"></i>
+                Refresh
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* System Stats Cards */}
+      <div className="row mb-4">
+        <div className="col-xl-3 col-md-6 mb-4">
+          <div className="card shadow h-100 py-2 border-start border-primary border-4">
+            <div className="card-body">
+              <div className="row no-gutters align-items-center">
+                <div className="col mr-2">
+                  <div className="text-xs fw-bold text-primary text-uppercase mb-1">
+                    Total Users
+                  </div>
+                  <div className="h5 mb-0 fw-bold text-gray-800">
+                    {dashboardData?.systemStats.totalUsers.toLocaleString()}
+                  </div>
+                </div>
+                <div className="col-auto">
+                  <i className="fas fa-users fa-2x text-success"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-xl-3 col-md-6 mb-4">
+          <div className="card shadow h-100 py-2 border-start border-success border-4">
+            <div className="card-body">
+              <div className="row no-gutters align-items-center">
+                <div className="col mr-2">
+                  <div className="text-xs fw-bold text-success text-uppercase mb-1">
+                    Active Batches
+                  </div>
+                  <div className="h5 mb-0 fw-bold text-gray-800">
+                    {dashboardData?.systemStats.activeBatches.toLocaleString()}
+                  </div>
+                </div>
+                <div className="col-auto">
+                  <i className="fas fa-seedling fa-2x text-success"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-xl-3 col-md-6 mb-4">
+          <div className="card shadow h-100 py-2 border-start border-info border-4">
+            <div className="card-body">
+              <div className="row no-gutters align-items-center">
+                <div className="col mr-2">
+                  <div className="text-xs fw-bold text-info text-uppercase mb-1">
+                    Total Transactions
+                  </div>
+                  <div className="h5 mb-0 fw-bold text-gray-800">
+                    {dashboardData?.systemStats.totalTransactions.toLocaleString()}
+                  </div>
+                </div>
+                <div className="col-auto">
+                  <i className="fas fa-clipboard-list fa-2x text-success"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="col-xl-3 col-md-6 mb-4">
+          <div className="card shadow h-100 py-2 border-start border-warning border-4">
+            <div className="card-body">
+              <div className="row no-gutters align-items-center">
+                <div className="col mr-2">
+                  <div className="text-xs fw-bold text-warning text-uppercase mb-1">
+                    System Uptime
+                  </div>
+                  <div className="h5 mb-0 fw-bold text-gray-800">
+                    {dashboardData?.systemStats.systemUptime}
+                  </div>
+                </div>
+                <div className="col-auto">
+                  <i className="fas fa-server fa-2x text-success"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Main Content Row */}
+      <div className="row">
+        {/* User Distribution */}
+        <div className="col-xl-4 col-lg-5">
+          <div className="card shadow mb-4">
+            <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 className="m-0 fw-bold text-primary">User Distribution</h6>
+            </div>
+            <div className="card-body">
+              <div className="row text-center">
+                <div className="col-6 mb-3">
+                  <div className="text-success">
+                    <i className="fas fa-tractor fa-2x mb-2"></i>
+                  </div>
+                  <div className="h5 mb-0">{dashboardData?.userStats.farmers}</div>
+                  <small className="text-muted">Farmers</small>
+                </div>
+                <div className="col-6 mb-3">
+                  <div className="text-primary">
+                    <i className="fas fa-industry fa-2x mb-2"></i>
+                  </div>
+                  <div className="h5 mb-0">{dashboardData?.userStats.manufacturers}</div>
+                  <small className="text-muted">Manufacturers</small>
+                </div>
+                <div className="col-6 mb-3">
+                  <div className="text-info">
+                    <i className="fas fa-users fa-2x mb-2"></i>
+                  </div>
+                  <div className="h5 mb-0">{dashboardData?.userStats.consumers}</div>
+                  <small className="text-muted">Consumers</small>
+                </div>
+                <div className="col-6 mb-3">
+                  <div className="text-warning">
+                    <i className="fas fa-user-shield fa-2x mb-2"></i>
+                  </div>
+                  <div className="h5 mb-0">{dashboardData?.userStats.admins}</div>
+                  <small className="text-muted">Admins</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Recent Activity */}
+        <div className="col-xl-8 col-lg-7">
+          <div className="card shadow mb-4">
+            <div className="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+              <h6 className="m-0 fw-bold text-primary">Recent Activity</h6>
+              <button className="btn btn-sm btn-outline-primary">View All</button>
+            </div>
+            <div className="card-body">
+              <div className="table-responsive">
+                <table className="table table-striped">
+                  <thead>
+                    <tr>
+                      <th>Activity</th>
+                      <th>User</th>
+                      <th>Details</th>
+                      <th>Time</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {dashboardData?.recentActivity.map(activity => (
+                      <tr key={activity.id}>
+                        <td>
+                          <span className={`badge ${
+                            activity.type === 'user_registration' ? 'bg-success' :
+                            activity.type === 'batch_created' ? 'bg-primary' :
+                            activity.type === 'product_verified' ? 'bg-info' :
+                            'bg-warning'
+                          }`}>
+                            {activity.type.replace('_', ' ')}
+                          </span>
+                        </td>
+                        <td>{activity.user}</td>
+                        <td>
+                          {activity.role && <span className="text-muted">({activity.role})</span>}
+                          {activity.batch && <code>{activity.batch}</code>}
+                        </td>
+                        <td className="text-muted">{activity.time}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* System Health */}
+      <div className="row">
+        <div className="col-12">
+          <div className="card shadow mb-4">
+            <div className="card-header py-3">
+              <h6 className="m-0 fw-bold text-primary">System Health</h6>
+            </div>
+            <div className="card-body">
+              <div className="row">
+                {Object.entries(dashboardData?.systemHealth || {}).map(([service, health]) => (
+                  <div key={service} className="col-xl-3 col-md-6 mb-3">
+                    <div className={`card border-start border-4 h-100 border-${
+                      health.status === 'healthy' ? 'success' :
+                      health.status === 'demo' || health.status === 'mock' ? 'warning' :
+                      'danger'
+                    }`}>
+                      <div className="card-body py-3">
+                        <div className="d-flex align-items-center">
+                          <div className="flex-grow-1">
+                            <div className="text-xs fw-bold text-uppercase mb-1">
+                              {service.toUpperCase()}
+                            </div>
+                            <div className="h6 mb-0 fw-bold">
+                              <span className={`badge bg-${
+                                health.status === 'healthy' ? 'success' :
+                                health.status === 'demo' || health.status === 'mock' ? 'warning' :
+                                'danger'
+                              }`}>
+                                {health.status.toUpperCase()}
+                              </span>
+                            </div>
+                            <small className="text-muted">
+                              {health.responseTime || health.connectionPool || health.blockHeight || health.usage || 'Status OK'}
+                            </small>
+                          </div>
+                          <div>
+                            <i className={`fas ${
+                              service === 'api' ? 'fa-server' :
+                              service === 'database' ? 'fa-database' :
+                              service === 'blockchain' ? 'fa-link' :
+                              'fa-hdd'
+                            } fa-2x ${
+                              health.status === 'healthy' ? 'text-success' :
+                              health.status === 'demo' || health.status === 'mock' ? 'text-warning' :
+                              'text-danger'
+                            }`}></i>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Quick Actions */}
+      <div className="row">
+        <div className="col-12">
+          <div className="card shadow mb-4">
+            <div className="card-header py-3">
+              <h6 className="m-0 fw-bold text-primary">Quick Actions</h6>
+            </div>
+            <div className="card-body">
+              <div className="row">
+                <div className="col-md-3 mb-3">
+                  <button className="btn btn-outline-primary w-100 py-3">
+                    <i className="fas fa-users fa-2x mb-2"></i><br />
+                    Manage Users
+                  </button>
+                </div>
+                <div className="col-md-3 mb-3">
+                  <button className="btn btn-outline-success w-100 py-3">
+                    <i className="fas fa-chart-bar fa-2x mb-2"></i><br />
+                    View Analytics
+                  </button>
+                </div>
+                <div className="col-md-3 mb-3">
+                  <button className="btn btn-outline-info w-100 py-3">
+                    <i className="fas fa-boxes fa-2x mb-2"></i><br />
+                    All Batches
+                  </button>
+                </div>
+                <div className="col-md-3 mb-3">
+                  <button className="btn btn-outline-warning w-100 py-3">
+                    <i className="fas fa-cogs fa-2x mb-2"></i><br />
+                    Settings
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default AdminDashboard;

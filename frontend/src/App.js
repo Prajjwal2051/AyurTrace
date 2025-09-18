@@ -23,17 +23,10 @@ import RegisterPage from './pages/RegisterPage';
 // Error Pages
 import UnauthorizedPage from './pages/errors/UnauthorizedPage';
 
+// Admin Components
+import AdminDashboard from './pages/admin/AdminDashboard';
+
 // Placeholder Dashboard Components (to be created next)
-const AdminDashboard = () => (
-  <div className="container mt-4">
-    <h2>Admin Dashboard</h2>
-    <p>Welcome to the Admin Portal! This dashboard will include user management, system analytics, and administrative controls.</p>
-    <div className="alert alert-info">
-      <i className="fas fa-info-circle me-2"></i>
-      This is a placeholder. Full dashboard features will be implemented next.
-    </div>
-  </div>
-);
 
 const FarmerDashboard = () => (
   <div className="container mt-4">
