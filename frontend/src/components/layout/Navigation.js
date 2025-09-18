@@ -7,11 +7,35 @@ const Navigation = () => {
   const navigate = useNavigate();
   const { user, isAuthenticated, logout } = useAuth();
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const [scannerInput, setScannerInput] = useState('');
 
   // Handle logout
   const handleLogout = () => {
     logout();
     navigate('/', { replace: true });
+  };
+
+  // Handle batch verification
+  const handleBatchVerification = (batchId) => {
+    if (batchId && batchId.trim()) {
+      // Navigate to consumer dashboard with the batch ID
+      if (isAuthenticated && user?.role === 'consumer') {
+        navigate('/consumer/dashboard', { state: { batchId: batchId.trim() } });
+      } else {
+        // For non-authenticated users or other roles, show an alert
+        alert(`Batch ID: ${batchId}\n\nTo verify this product, please log in as a consumer or visit our consumer portal.`);
+      }
+      setScannerInput('');
+    }
+  };
+
+  // Handle QR scanner activation
+  const handleQRScanner = () => {
+    if (isAuthenticated && user?.role === 'consumer') {
+      navigate('/consumer/dashboard');
+    } else {
+      alert('QR Scanner is available for registered consumers. Please log in as a consumer to use this feature.');
+    }
   };
 
   // Get navigation items based on user role
@@ -56,7 +80,24 @@ const Navigation = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
+    <>
+      <style>{`
+        .scanner-input::placeholder {
+          color: rgba(255, 255, 255, 0.7) !important;
+        }
+        .scanner-input:focus {
+          box-shadow: none !important;
+          background: transparent !important;
+        }
+        .scanner-container:hover {
+          background: rgba(255, 255, 255, 0.15) !important;
+          transition: all 0.3s ease;
+        }
+        .navbar .scanner-input {
+          color: white !important;
+        }
+      `}</style>
+      <nav className="navbar navbar-expand-lg navbar-dark bg-success shadow-sm">
       <div className="container">
         {/* Brand */}
         <Link className="navbar-brand fw-bold d-flex align-items-center" to="/">
@@ -93,6 +134,50 @@ const Navigation = () => {
               ))}
             </ul>
           )}
+
+          {/* Center - Product Scanner */}
+          <div className="d-flex align-items-center mx-auto">
+            <div className="d-none d-lg-flex align-items-center bg-white bg-opacity-10 rounded-pill px-3 py-2 border border-white border-opacity-25 scanner-container">
+              <i className="fas fa-qrcode text-white me-2"></i>
+              <input 
+                type="text" 
+                className="form-control form-control-sm border-0 bg-transparent text-white scanner-input"
+                placeholder="Enter batch ID or scan QR code..."
+                value={scannerInput}
+                onChange={(e) => setScannerInput(e.target.value)}
+                style={{
+                  background: 'transparent !important',
+                  boxShadow: 'none',
+                  color: 'white',
+                  width: '280px'
+                }}
+                onKeyPress={(e) => {
+                  if (e.key === 'Enter') {
+                    handleBatchVerification(scannerInput);
+                  }
+                }}
+              />
+              <button 
+                className="btn btn-light btn-sm ms-2 d-flex align-items-center"
+                style={{ fontSize: '12px', padding: '4px 8px' }}
+                onClick={handleQRScanner}
+              >
+                <i className="fas fa-camera me-1"></i>
+                Scan
+              </button>
+            </div>
+            
+            {/* Mobile Version */}
+            <div className="d-lg-none">
+              <button 
+                className="btn btn-outline-light btn-sm"
+                onClick={handleQRScanner}
+              >
+                <i className="fas fa-qrcode me-1"></i>
+                Scanner
+              </button>
+            </div>
+          </div>
 
           {/* Right Side - User Menu or Auth Links */}
           <ul className="navbar-nav ms-auto">
@@ -180,7 +265,8 @@ const Navigation = () => {
           </ul>
         </div>
       </div>
-    </nav>
+      </nav>
+    </>
   );
 };
 
