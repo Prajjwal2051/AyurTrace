@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import localStorageManager from '../../utils/localStorage';
@@ -9,103 +9,69 @@ const ManufacturerDashboard = () => {
   const [dashboardData, setDashboardData] = useState(null);
 
   // Load manufacturer dashboard data from localStorage
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      setLoading(true);
-      try {
-        await new Promise(resolve => setTimeout(resolve, 400));
+  const fetchDashboardData = useCallback(async () => {
+    setLoading(true);
+    try {
+      await new Promise(resolve => setTimeout(resolve, 400));
 
-        const availableBatches = localStorageManager.getAvailableBatchesForPurchase();
-        const manufacturingRecords = localStorageManager.getManufacturingRecords();
+      const availableBatches = localStorageManager.getAvailableBatchesForPurchase();
+      const manufacturingRecords = localStorageManager.getManufacturingRecords();
 
-        const manufacturingStats = {
-          totalProducts: localStorageManager.getProducts().length,
-          processingBatches: manufacturingRecords.filter(r => r.status !== 'Completed').length,
-          completedProducts: localStorageManager.getProducts().length,
-          totalRevenue: 2450000
-        };
+      const manufacturingStats = {
+        totalProducts: localStorageManager.getProducts().length,
+        processingBatches: manufacturingRecords.filter(r => r.status !== 'Completed').length,
+        completedProducts: localStorageManager.getProducts().length,
+        totalRevenue: 2450000
+      };
 
-        // Derive processing queue from manufacturing records
-        const processingQueue = manufacturingRecords.map(r => ({
-          id: r.id,
-          product: `${localStorageManager.getBatches().find(b => b.id === r.batchId)?.crop || 'Herb'} Processing`,
-          stage: r.status === 'Processing' ? 'Processing' : 'Completed',
-          progress: r.status === 'Processing' ? 60 : 100,
-          estimated: r.status === 'Processing' ? '2 days' : 'Done',
-          quality: r.qualityTestResult === 'Passed' ? 'Excellent' : 'Good'
-        }));
+      // Derive processing queue from manufacturing records
+      const processingQueue = manufacturingRecords.map(r => ({
+        id: r.id,
+        product: `${localStorageManager.getBatches().find(b => b.id === r.batchId)?.crop || 'Herb'} Processing`,
+        stage: r.status === 'Processing' ? 'Processing' : 'Completed',
+        progress: r.status === 'Processing' ? 60 : 100,
+        estimated: r.status === 'Processing' ? '2 days' : 'Done',
+        quality: r.qualityTestResult === 'Passed' ? 'Excellent' : 'Good'
+      }));
 
-        const qualityMetrics = { moistureContent: 8.5, pesticides: 'Below Limit', activeCompounds: 'Optimal', heavyMetals: 'Safe' };
-        const productionChart = [
-          { month: 'Jan', production: 28 },
-          { month: 'Feb', production: 32 },
-          { month: 'Mar', production: 35 },
-          { month: 'Apr', production: 29 },
-          { month: 'May', production: 38 },
-          { month: 'Jun', production: 42 }
-        ];
+      const qualityMetrics = { moistureContent: 8.5, pesticides: 'Below Limit', activeCompounds: 'Optimal', heavyMetals: 'Safe' };
+      const productionChart = [
+        { month: 'Jan', production: 28 },
+        { month: 'Feb', production: 32 },
+        { month: 'Mar', production: 35 },
+        { month: 'Apr', production: 29 },
+        { month: 'May', production: 38 },
+        { month: 'Jun', production: 42 }
+      ];
 
-        const data = {
-          manufacturingStats,
-          availableBatches: availableBatches.map(b => ({
-            id: b.id,
-            farmer: b.farmerName,
-            herb: b.crop,
-            quantity: b.quantity,
-            quality: b.quality?.match(/Grade\s([A-C\+]+)/)?.[1]?.replace('+','') || 'A',
-            price: 200,
-            location: b.location
-          })),
-          processingQueue,
-          qualityMetrics,
-          productionChart
-        };
+      const data = {
+        manufacturingStats,
+        availableBatches: availableBatches.map(b => ({
+          id: b.id,
+          farmer: b.farmerName,
+          herb: b.crop,
+          quantity: b.quantity,
+          quality: b.quality?.match(/Grade\s([A-C\+]+)/)?.[1]?.replace('+','') || 'A',
+          price: 200,
+          location: b.location
+        })),
+        processingQueue,
+        qualityMetrics,
+        productionChart
+      };
 
-        setDashboardData(data);
-          manufacturingStats: {
-            totalProducts: 156,
-            processingBatches: 8,
-            completedProducts: 148,
-            totalRevenue: 2450000
-          },
-          availableBatches: [
-            { id: 'BATCH-F-2024-012', farmer: 'Rajesh Kumar', herb: 'Ashwagandha', quantity: '500 kg', quality: 'A', price: 250, location: 'Rishikesh' },
-            { id: 'BATCH-F-2024-016', farmer: 'Sunita Devi', herb: 'Tulsi', quantity: '300 kg', quality: 'A', price: 180, location: 'Haridwar' },
-            { id: 'BATCH-F-2024-017', farmer: 'Mohan Singh', herb: 'Brahmi', quantity: '400 kg', quality: 'B', price: 200, location: 'Dehradun' },
-            { id: 'BATCH-F-2024-018', farmer: 'Anita Sharma', herb: 'Neem', quantity: '350 kg', quality: 'A', price: 160, location: 'Rishikesh' }
-          ],
-          processingQueue: [
-            { id: 'PROC-2024-008', product: 'Ashwagandha Extract', stage: 'Drying', progress: 75, estimated: '2 days', quality: 'Good' },
-            { id: 'PROC-2024-009', product: 'Tulsi Oil', stage: 'Extraction', progress: 45, estimated: '4 days', quality: 'Good' },
-            { id: 'PROC-2024-010', product: 'Brahmi Powder', stage: 'Grinding', progress: 90, estimated: '1 day', quality: 'Excellent' }
-          ],
-          qualityMetrics: {
-            moistureContent: 8.5,
-            pesticides: 'Below Limit',
-            activeCompounds: 'Optimal',
-            heavyMetals: 'Safe'
-          },
-          productionChart: [
-            { month: 'Jan', production: 28 },
-            { month: 'Feb', production: 32 },
-            { month: 'Mar', production: 35 },
-            { month: 'Apr', production: 29 },
-            { month: 'May', production: 38 },
-            { month: 'Jun', production: 42 }
-          ]
-        };
-        
-        setDashboardData(mockData);
-      } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error('Error fetching manufacturer dashboard data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDashboardData();
+      setDashboardData(data);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Error fetching manufacturer dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
   }, []);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   if (loading) {
     return <LoadingSpinner fullScreen={true} text="Loading manufacturer dashboard..." />;

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
 import AnalyticsDashboard from '../../components/analytics/AnalyticsDashboard';
@@ -15,64 +15,64 @@ const FarmerDashboard = () => {
   const [showHerbForm, setShowHerbForm] = useState(false);
 
   // Fetch farmer dashboard data from local storage
-  useEffect(() => {
-    const fetchDashboardData = async () => {
-      setLoading(true);
-      try {
-        // Simulate API delay for demo
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
-        // Get real data from local storage
-        const farmerBatches = localStorageManager.getBatches(user?.id);
-        const analytics = localStorageManager.updateAnalytics();
-        
-        const dashboardData = {
-          farmStats: {
-            totalBatches: analytics.totalBatches,
-            activeBatches: farmerBatches.filter(b => b.status !== 'Harvested').length,
-            harvestedBatches: farmerBatches.filter(b => b.status === 'Harvested').length,
-            totalRevenue: farmerBatches.length * 25000 // Mock calculation
-          },
+  const fetchDashboardData = useCallback(async () => {
+    setLoading(true);
+    try {
+      // Simulate API delay for demo
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      // Get real data from local storage
+      const farmerBatches = localStorageManager.getBatches(user?.id);
+      const analytics = localStorageManager.updateAnalytics();
+      
+      const dashboardData = {
+        farmStats: {
+          totalBatches: analytics.totalBatches,
+          activeBatches: farmerBatches.filter(b => b.status !== 'Harvested').length,
+          harvestedBatches: farmerBatches.filter(b => b.status === 'Harvested').length,
+          totalRevenue: farmerBatches.length * 25000 // Mock calculation
+        },
           recentBatches: farmerBatches.slice(0, 4).map(batch => ({
             id: batch.id,
             herb: batch.crop,
             quantity: batch.quantity,
-            quality: batch.quality.charAt(batch.quality.length - 1), // Extract grade letter
+            quality: batch.quality?.match(/Grade\s([A-C\+]+)/)?.[1]?.replace('+','') || 'A', // Extract grade letter properly
             status: batch.status,
             date: new Date(batch.updatedAt).toLocaleDateString(),
             buyer: batch.status === 'Harvested' ? 'Ayur Processing' : 'Pending'
           })),
-          seasonalData: {
-            currentSeason: 'Monsoon',
-            recommendedHerbs: ['Tulsi', 'Brahmi', 'Neem'],
-            weatherAlert: 'Heavy rainfall expected in next 3 days',
-            soilCondition: 'Good - High moisture content'
-          },
-          qualityDistribution: {
-            gradeA: 32,
-            gradeB: 12,
-            gradeC: 4
-          },
-          monthlyEarnings: [
-            { month: 'Jan', amount: 18000 },
-            { month: 'Feb', amount: 22000 },
-            { month: 'Mar', amount: 25000 },
-            { month: 'Apr', amount: 19000 },
-            { month: 'May', amount: 28000 },
-            { month: 'Jun', amount: 33000 }
-          ]
-        };
-        
-        setDashboardData(dashboardData);
-      } catch (error) {
-        console.error('Error fetching farmer dashboard data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDashboardData();
+        seasonalData: {
+          currentSeason: 'Monsoon',
+          recommendedHerbs: ['Tulsi', 'Brahmi', 'Neem'],
+          weatherAlert: 'Heavy rainfall expected in next 3 days',
+          soilCondition: 'Good - High moisture content'
+        },
+        qualityDistribution: {
+          gradeA: 32,
+          gradeB: 12,
+          gradeC: 4
+        },
+        monthlyEarnings: [
+          { month: 'Jan', amount: 18000 },
+          { month: 'Feb', amount: 22000 },
+          { month: 'Mar', amount: 25000 },
+          { month: 'Apr', amount: 19000 },
+          { month: 'May', amount: 28000 },
+          { month: 'Jun', amount: 33000 }
+        ]
+      };
+      
+      setDashboardData(dashboardData);
+    } catch (error) {
+      console.error('Error fetching farmer dashboard data:', error);
+    } finally {
+      setLoading(false);
+    }
   }, [user?.id]);
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   // Handle herb batch submission
   const handleHerbSubmit = (herbData) => {
@@ -90,7 +90,7 @@ const FarmerDashboard = () => {
     setShowHerbForm(false);
     
     // Refresh dashboard data
-    window.location.reload(); // Simple refresh for demo
+    fetchDashboardData();
   };
 
   if (loading) {
@@ -131,6 +131,14 @@ const FarmerDashboard = () => {
                   Location View
                 </button>
               </div>
+              <button 
+                className="btn btn-outline-success me-2"
+                onClick={() => fetchDashboardData()}
+                disabled={loading}
+              >
+                <i className="fas fa-sync me-2"></i>
+                {loading ? 'Refreshing...' : 'Refresh Data'}
+              </button>
               <button 
                 onClick={() => setShowHerbForm(true)}
                 style={{
