@@ -177,19 +177,6 @@ const Navigation = () => {
               </>
             )}
 
-            {/* Quick Actions */}
-            {!isAuthenticated && (
-              <li className="nav-item">
-                <Link 
-                  className="nav-link border rounded ms-2" 
-                  to="/consumer/verify"
-                  onClick={() => setIsCollapsed(true)}
-                >
-                  <i className="fas fa-search me-1"></i>
-                  Verify Product
-                </Link>
-              </li>
-            )}
           </ul>
         </div>
       </div>
