@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import AnalyticsDashboard from '../../components/analytics/AnalyticsDashboard';
+import SupplyChainMap from '../../components/mapping/SupplyChainMap';
 
 const FarmerDashboard = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState(null);
+  const [activeView, setActiveView] = useState('dashboard');
 
   // Simulate API call to fetch farmer dashboard data
   useEffect(() => {
@@ -76,13 +79,32 @@ const FarmerDashboard = () => {
               <p className="text-muted mb-0">Welcome back, {user?.name}! Farm: {user?.farmName}</p>
             </div>
             <div className="d-flex gap-2">
+              <div className="btn-group me-2" role="group">
+                <button 
+                  className={`btn ${activeView === 'dashboard' ? 'btn-primary' : 'btn-outline-primary'}`}
+                  onClick={() => setActiveView('dashboard')}
+                >
+                  <i className="fas fa-tachometer-alt me-1"></i>
+                  Farm Overview
+                </button>
+                <button 
+                  className={`btn ${activeView === 'analytics' ? 'btn-primary' : 'btn-outline-primary'}`}
+                  onClick={() => setActiveView('analytics')}
+                >
+                  <i className="fas fa-chart-line me-1"></i>
+                  Analytics
+                </button>
+                <button 
+                  className={`btn ${activeView === 'map' ? 'btn-primary' : 'btn-outline-primary'}`}
+                  onClick={() => setActiveView('map')}
+                >
+                  <i className="fas fa-map me-1"></i>
+                  Location View
+                </button>
+              </div>
               <button className="btn btn-success">
                 <i className="fas fa-plus me-2"></i>
                 Add New Batch
-              </button>
-              <button className="btn btn-outline-primary">
-                <i className="fas fa-sync-alt me-2"></i>
-                Refresh
               </button>
             </div>
           </div>
@@ -101,6 +123,21 @@ const FarmerDashboard = () => {
         </div>
       )}
 
+      {/* Conditional View Rendering */}
+      {activeView === 'analytics' && (
+        <div className="mt-4">
+          <AnalyticsDashboard userRole="farmer" />
+        </div>
+      )}
+
+      {activeView === 'map' && (
+        <div className="mt-4">
+          <SupplyChainMap viewMode="farmer" />
+        </div>
+      )}
+
+      {activeView === 'dashboard' && (
+        <>
       {/* Farm Stats Cards */}
       <div className="row mb-4">
         <div className="col-xl-3 col-md-6 mb-4">
@@ -377,6 +414,8 @@ const FarmerDashboard = () => {
           </div>
         </div>
       </div>
+        </>
+      )}
     </div>
   );
 };

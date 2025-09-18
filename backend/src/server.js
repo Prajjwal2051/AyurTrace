@@ -21,6 +21,8 @@ const consumerRoutes = require('./routes/consumer');
 const blockchainRoutes = require('./routes/blockchain');
 const dashboardRoutes = require('./routes/dashboard');
 const adminRoutes = require('./routes/admin');
+const analyticsRoutes = require('./routes/analytics');
+const geolocationRoutes = require('./routes/geolocation');
 
 // Import middleware
 const { errorHandler, notFound } = require('./middleware/errorHandler');
@@ -162,7 +164,9 @@ app.get('/api', (req, res) => {
       consumer: '/api/consumer',
       blockchain: '/api/blockchain',
       dashboard: '/api/dashboard',
-      admin: '/api/admin'
+      admin: '/api/admin',
+      analytics: '/api/analytics',
+      geolocation: '/api/geolocation'
     },
     status: 'operational'
   });
@@ -176,6 +180,8 @@ app.use('/api/consumer', consumerRoutes);
 app.use('/api/blockchain', blockchainRoutes);
 app.use('/api/dashboard', dashboardRoutes);
 app.use('/api/admin', adminRoutes);
+app.use('/api/analytics', analyticsRoutes);
+app.use('/api/geolocation', geolocationRoutes);
 
 // Blockchain event listeners setup
 const setupBlockchainListeners = () => {

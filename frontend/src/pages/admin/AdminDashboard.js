@@ -1,11 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import LoadingSpinner from '../../components/common/LoadingSpinner';
+import AnalyticsDashboard from '../../components/analytics/AnalyticsDashboard';
+import SupplyChainMap from '../../components/mapping/SupplyChainMap';
 
 const AdminDashboard = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
   const [dashboardData, setDashboardData] = useState(null);
+  const [activeView, setActiveView] = useState('dashboard'); // 'dashboard', 'analytics', 'map'
+  const [showUserManagement, setShowUserManagement] = useState(false);
 
   // Simulate API call to fetch dashboard data
   useEffect(() => {
@@ -69,14 +73,33 @@ const AdminDashboard = () => {
               <p className="text-muted mb-0">Welcome back, {user?.name}!</p>
             </div>
             <div className="d-flex gap-2">
-              <button className="btn btn-outline-success">
-                <i className="fas fa-download me-2"></i>
-                Export Data
+              <button className="btn btn-success" onClick={() => setShowUserManagement(true)}>
+                <i className="fas fa-plus me-2"></i>
+                Add User
               </button>
-              <button className="btn btn-success">
-                <i className="fas fa-sync-alt me-2"></i>
-                Refresh
-              </button>
+              <div className="btn-group" role="group">
+                <button 
+                  className={`btn ${activeView === 'dashboard' ? 'btn-primary' : 'btn-outline-primary'}`}
+                  onClick={() => setActiveView('dashboard')}
+                >
+                  <i className="fas fa-tachometer-alt me-1"></i>
+                  Dashboard
+                </button>
+                <button 
+                  className={`btn ${activeView === 'analytics' ? 'btn-primary' : 'btn-outline-primary'}`}
+                  onClick={() => setActiveView('analytics')}
+                >
+                  <i className="fas fa-chart-line me-1"></i>
+                  Analytics
+                </button>
+                <button 
+                  className={`btn ${activeView === 'map' ? 'btn-primary' : 'btn-outline-primary'}`}
+                  onClick={() => setActiveView('map')}
+                >
+                  <i className="fas fa-map me-1"></i>
+                  Supply Chain Map
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -351,6 +374,40 @@ const AdminDashboard = () => {
           </div>
         </div>
       </div>
+
+      {/* Conditional View Rendering */}
+      {activeView === 'dashboard' && (
+        <div>Dashboard content here...</div>
+      )}
+
+      {activeView === 'analytics' && (
+        <div className="mt-4">
+          <AnalyticsDashboard userRole="admin" />
+        </div>
+      )}
+
+      {activeView === 'map' && (
+        <div className="mt-4">
+          <SupplyChainMap viewMode="admin" />
+        </div>
+      )}
+
+      {/* User Management Modal */}
+      {showUserManagement && (
+        <div className="modal show d-block" style={{ backgroundColor: 'rgba(0,0,0,0.8)' }}>
+          <div className="modal-dialog modal-lg">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">User Management - Coming Soon</h5>
+                <button type="button" className="btn-close" onClick={() => setShowUserManagement(false)}></button>
+              </div>
+              <div className="modal-body">
+                <p>Advanced user management functionality will be implemented in the next phase.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
