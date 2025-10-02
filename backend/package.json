@@ -4,14 +4,14 @@
   "description": "Backend API for AyurTrace - Blockchain-based Ayurvedic herb supply chain traceability",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "nodemon src/server.js",
+    "start": "node init && node src/server.js",
+    "dev": "node init && nodemon src/server.js",
     "test": "jest --watchAll --detectOpenHandles",
     "test:coverage": "jest --coverage",
     "lint": "eslint src/",
     "lint:fix": "eslint src/ --fix",
     "seed": "node scripts/seed-database.js",
-    "build": "npm run lint && npm test",
+    "build": "node init && npm run lint && npm test",
     "docker:build": "docker build -t ayurtrace-backend .",
     "docker:run": "docker run -p 3001:3001 ayurtrace-backend"
   },
