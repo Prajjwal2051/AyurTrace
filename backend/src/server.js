@@ -196,10 +196,7 @@ const connectDB = async () => {
       ? process.env.MONGODB_TEST_URI 
       : process.env.MONGODB_URI;
 
-    const conn = await mongoose.connect(mongoURI, {
-      useNewUrlParser: true,
-      useUnifiedTopology: true
-    });
+    const conn = await mongoose.connect(mongoURI);
 
     winstonLogger.info(`MongoDB Connected: ${conn.connection.host}`);
     
@@ -251,18 +248,18 @@ const PORT = process.env.PORT || 3001;
 
 const server = app.listen(PORT, () => {
   winstonLogger.info(`Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
-  console.log(`🚀 AyurTrace API Server`);
-  console.log(`📋 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🌐 Server: http://localhost:${PORT}`);
-  console.log(`💊 Health Check: http://localhost:${PORT}/api/health`);
-  console.log(`📚 API Docs: http://localhost:${PORT}/api`);
-  console.log('='.repeat(50));
+  winstonLogger.info(`🚀 AyurTrace API Server`);
+  winstonLogger.info(`📋 Environment: ${process.env.NODE_ENV || 'development'}`);
+  winstonLogger.info(`🌐 Server: http://localhost:${PORT}`);
+  winstonLogger.info(`💊 Health Check: http://localhost:${PORT}/api/health`);
+  winstonLogger.info(`📚 API Docs: http://localhost:${PORT}/api`);
+  winstonLogger.info('='.repeat(50));
 });
 
 // Initialize WebSocket server
 const socketServer = require('./websocket/socketServer');
 socketServer.initialize(server);
-console.log('📡 WebSocket server initialized for real-time features');
+winstonLogger.info('📡 WebSocket server initialized for real-time features');
 
 // Handle server errors
 server.on('error', (error) => {

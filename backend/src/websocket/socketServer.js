@@ -21,7 +21,7 @@ class SocketServer {
     this.setupSocketEvents();
     this.startPeriodicUpdates();
 
-    console.log('WebSocket server initialized');
+    // WebSocket server initialized
     return this.io;
   }
 
@@ -90,9 +90,11 @@ class SocketServer {
       });
 
       // Handle analytics subscription
-      socket.on('subscribe_analytics', (filters) => {
-        socket.join('analytics_updates');
-        console.log(`User ${socket.userId} subscribed to analytics updates`);
+      socket.on('subscribe_analytics', () => {
+        if (socket.userRole === 'admin' || socket.userRole === 'gov_admin') {
+          socket.join('analytics_updates');
+          logger.info(`User ${socket.userId} subscribed to analytics updates`);
+        }
       });
 
       // Handle location updates (from mobile apps/GPS devices)
@@ -133,13 +135,13 @@ class SocketServer {
 
       // Handle disconnection
       socket.on('disconnect', () => {
-        console.log(`User ${socket.userId} disconnected`);
+        logger.info(`User ${socket.userId} disconnected`);
         this.connectedUsers.delete(socket.id);
       });
 
       // Handle errors
       socket.on('error', (error) => {
-        console.error(`Socket error for user ${socket.userId}:`, error);
+        logger.error(`Socket error for user ${socket.userId}:`, error);
       });
     });
   }
